@@ -3,9 +3,9 @@ package com.bridgelabz.facebookapplication
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-class RegistrationActivity : AppCompatActivity() {
+class FacebookHomePage : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_registration)
+        setContentView(R.layout.activity_facebook_home_page)
     }
 }
