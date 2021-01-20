@@ -4,15 +4,9 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
-import android.text.method.HideReturnsTransformationMethod
-import android.text.method.PasswordTransformationMethod
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.startActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
@@ -21,15 +15,15 @@ import com.google.firebase.auth.FirebaseAuth
 class SignupActivity : AppCompatActivity() {
 
     var firebaseAuth: FirebaseAuth? = null
-    val Btn: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
+    }
 
+    fun facebookRegistration(view: View) {
         firebaseAuth = FirebaseAuth.getInstance()
-
-        var signUpButton = findViewById<Button>(R.id.register_button)
+        val signUpButton = findViewById<Button>(R.id.register_button)
 
         signUpButton.setOnClickListener {
             registerNewUser()
@@ -49,6 +43,7 @@ class SignupActivity : AppCompatActivity() {
         println("lastname:$lName")
         println("Emailid:$email")
         println("password:$password")
+
 
         if (TextUtils.isEmpty(fName)) {
             Toast.makeText(getApplicationContext(),
@@ -111,28 +106,6 @@ class SignupActivity : AppCompatActivity() {
                 })
     }
 
-    fun ShowHideButton(view: View) {
-
-        var showHideBtn = findViewById<Button>(R.id.showHideBtn)
-        var pwd = findViewById<EditText>(R.id.password_EditText)
-        showHideBtn.setOnClickListener {
-            if (showHideBtn.text.toString().equals("Show")) {
-                pwd.transformationMethod = HideReturnsTransformationMethod.getInstance()
-                showHideBtn.text = "Hide"
-            } else {
-                pwd.transformationMethod = PasswordTransformationMethod.getInstance()
-                showHideBtn.text = "Show"
-            }
-
-        }
-    }
-
-  /* fun registrationResult(view: View) {
-        val intent = Intent(this, RegistrationActivitySecondPage::class.java)
-        startActivity(intent)
-
-    }*/
-
     fun setupHyperlink(view: View) {
         val linkTextView = findViewById<TextView>(R.id.hyperlink_TextView)
         linkTextView.setLinkTextColor(Color.BLUE)
@@ -141,4 +114,5 @@ class SignupActivity : AppCompatActivity() {
             startActivity(switchActivityIntent)
         }
     }
+
 }

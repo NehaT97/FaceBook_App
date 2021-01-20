@@ -4,46 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="#DDF3EBEB"
     android:backgroundTint="#9E49484A"
-    tools:context=".SignupActivity">
-
-
-    <EditText
-        android:id="@+id/password_EditText"
-        android:layout_width="230dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="390dp"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/edit_text_border"
-        android:backgroundTint="#FFFFFF"
-        android:ems="10"
-        android:hint="password"
-        android:inputType="textPersonName"
-        android:padding="14dp" />
-
-    <Button
-        android:id="@+id/showHideBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="450dp"
-        android:layout_marginLeft="320dp"
-        android:onClick="ShowHideButton"
-        android:text="Show"/>
-
-    <EditText
-        android:id="@+id/emailId_EditText"
-        android:layout_width="230dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="300dp"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/edit_text_border"
-        android:backgroundTint="#FFFFFF"
-        android:ems="10"
-        android:hint="emailId"
-        android:inputType="textPersonName"
-        android:padding="14dp" />
+    android:visibility="visible"
+    tools:context=".SignupActivity"
+    tools:ignore="ExtraText">
 
     <TextView
         android:id="@+id/EnterDetails_textView"
@@ -52,61 +17,114 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:fontFamily="sans-serif-condensed"
-        android:text="Enter The Details"
+        android:text="@string/enter_the_details"
         android:textAlignment="center"
         android:textSize="30sp"
         android:textStyle="normal|bold"
         tools:layout_editor_absoluteX="194dp"
         tools:layout_editor_absoluteY="70dp" />
 
-    <EditText
-        android:id="@+id/firstName_EditText"
-        android:layout_width="230dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
-        android:background="@drawable/edit_text_border"
-        android:backgroundTint="#FFFFFF"
-        android:ems="10"
-        android:layout_centerHorizontal="true"
-        android:inputType="textPersonName"
-        android:padding="14dp"
-        android:hint="Name" />
-
-    <EditText
-        android:id="@+id/lastName_EditText"
-        android:layout_width="230dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="210dp"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/edit_text_border"
-        android:backgroundTint="#FFFFFF"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:padding="14dp"
-        android:hint="last Name" />
-
-
-
 
     <Button
         android:id="@+id/register_button"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:layout_marginTop="540dp"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="460dp"
+        android:onClick="facebookRegistration"
         android:text="Register" />
 
     <TextView
         android:id="@+id/hyperlink_TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="740dp"
+        android:layout_marginTop="550dp"
         android:fontFamily="sans-serif-black"
+        android:onClick="setupHyperlink"
         android:text="@string/hyperlink"
         android:textColor="@color/black"
-        android:onClick="setupHyperlink"
-        android:textSize="25sp"
-        android:textStyle="bold|italic" />
+        android:textSize="15sp"
+        android:textStyle="normal" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/firstName_TextInput"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120dp"
+        android:background="@drawable/edit_text_border"
+        android:backgroundTint="#FFFFFF"
+        android:ems="10">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/firstName_EditText"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:hint="@string/firstName_hint" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/lastName_TextInput"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="210dp"
+        android:background="@drawable/edit_text_border"
+        android:backgroundTint="#FFFFFF"
+        android:ems="10">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/lastName_EditText"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:hint="@string/lastName_hint" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/EmailId_TextInput"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="300dp"
+        android:background="@drawable/edit_text_border"
+        android:backgroundTint="#FFFFFF"
+        android:ems="10">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/emailId_EditText"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:hint="@string/email_hint" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/password_TextInput"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="390dp"
+        android:background="@drawable/edit_text_border"
+        android:backgroundTint="#FFFFFF"
+        android:ems="10"
+        app:passwordToggleEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/password_EditText"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:hint="@string/password_hint" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
 
 </RelativeLayout>
