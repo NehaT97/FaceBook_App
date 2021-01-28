@@ -1,0 +1,6 @@
+include ':app'
+rootProject.name = "FundooApp"
+
+/*
+rootProject.name = "FundooApp"
+*/

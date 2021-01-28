@@ -1,4 +1,4 @@
-package com.bridgelabz.facebookapplication
+package com.bridgelabz.fundooapplication
 
 import android.content.Intent
 import android.graphics.Color
@@ -13,7 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.bridgelabz.facebookapplication.loadingAlertDialog.ProgressLoader
+import com.bridgelabz.fundooapplication.loadingAlertDialog.ProgressLoader
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions

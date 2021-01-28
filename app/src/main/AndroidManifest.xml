@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.bridgelabz.facebookapplication">
+    package="com.bridgelabz.fundooapplication">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
-        <activity android:name=".FacebookHomePage"></activity>
+        <activity android:name="com.bridgelabz.fundooapplication.FacebookHomePage"></activity>
         <!--
         <uses-library
             android:name="com.google.android.wearable"
@@ -30,11 +30,11 @@
 <!--
         <activity android:name=".ForgotPasswordActivity" />
 -->
-        <activity android:name=".SignupActivity" />
+        <activity android:name="com.bridgelabz.fundooapplication.SignupActivity" />
 <!--
         <activity android:name=".RegistrationActivitySecondPage" />
 -->
-        <activity android:name=".MainActivity">
+        <activity android:name="com.bridgelabz.fundooapplication.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

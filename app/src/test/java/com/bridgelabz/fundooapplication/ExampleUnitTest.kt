@@ -1,4 +1,4 @@
-package com.bridgelabz.facebookapplication
+package com.bridgelabz.fundooapplication
 
 import org.junit.Test
 
