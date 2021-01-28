@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "253046872436-98ti0qkbknulkmj8a7urmi01lunomrs7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bridgelabz.facebookapplication",
+            "certificate_hash": "a041480141eb24b2178f7285a4e80a02d8491ad0"
+          }
+        },
+        {
           "client_id": "253046872436-p4okkrssice06mthhhd1cn7durna63ut.apps.googleusercontent.com",
           "client_type": 3
         }

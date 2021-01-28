@@ -3,9 +3,13 @@ package com.bridgelabz.facebookapplication
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.text.TextUtils
+import android.util.Log
+import android.util.Patterns
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
@@ -31,88 +35,94 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun registerNewUser() {
+        val fName = findViewById<EditText>(R.id.firstName_EditText)
+        val lName = findViewById<EditText>(R.id.lastName_EditText)
 
-        val fName: String = findViewById<EditText>(R.id.firstName_EditText).text.toString()
-        val lName: String = findViewById<EditText>(R.id.lastName_EditText).text.toString()
-
-        val email: String = findViewById<EditText>(R.id.emailId_EditText).text.toString()
-        val password: String = findViewById<EditText>(R.id.password_EditText).text.toString()
+        val email = findViewById<EditText>(R.id.emailId_EditText)
+        val password = findViewById<EditText>(R.id.password_EditText)
 
 
+        /* Debugging */
         println("firstname:$fName")
         println("lastname:$lName")
         println("Emailid:$email")
         println("password:$password")
 
-
-        if (TextUtils.isEmpty(fName)) {
-            Toast.makeText(getApplicationContext(),
-                    "Please enter FirstName!!",
-                    Toast.LENGTH_LONG)
-                    .show();
+        if (fName.text.toString().isEmpty()) {
+            fName.error = "Please Enter The First Name"
+            fName.requestFocus()
             return;
         }
 
-        if (TextUtils.isEmpty(lName)) {
-            Toast.makeText(getApplicationContext(),
-                    "Please enter Last Name!!",
-                    Toast.LENGTH_LONG)
-                    .show();
+        if (!fName.text.toString().matches("[A-Z][a-z]*" .toRegex())){
+            fName.error = "FirstName Should Contain Only Alphabets"
+            fName.requestFocus()
+            return
+        }
+
+        if (lName.text.toString().isEmpty()) {
+            lName.error = "Please Enter The Last Name"
+            lName.requestFocus()
             return;
         }
 
-        if (TextUtils.isEmpty(email)) {
-            Toast.makeText(getApplicationContext(),
-                    "Please enter email!!",
-                    Toast.LENGTH_LONG)
-                    .show();
+        if (!lName.text.toString().matches("[A-Z][a-z]*" .toRegex())){
+            lName.error = "lastName Should Contain Only Alphabets"
+            lName.requestFocus()
+            return
+        }
+
+        if (email.text.toString().isEmpty()) {
+            email.error = "Please Enter The Email Id"
+            email.requestFocus()
             return;
         }
 
-         if (TextUtils.isEmpty(password)) {
-            Toast.makeText(getApplicationContext(),
-                    "Please enter password!!",
-                    Toast.LENGTH_LONG)
-                    .show();
+        if (!Patterns.EMAIL_ADDRESS.matcher(email.text.toString()).matches()) {
+            email.error = "Email Should Be Valid"
+            email.requestFocus()
+            return
+        }
+
+        if (password.text.toString().isEmpty()) {
+            password.error = "Please Enter The Password"
+            password.requestFocus()
             return;
         }
 
-       else if ((fName.isEmpty() && lName.isEmpty() && email.isEmpty() && password.isEmpty())){
-            Toast.makeText(getApplicationContext(),
-                    "Enter The Details!!",
-                    Toast.LENGTH_LONG)
-                    .show();
+        if (password.text.toString().length < 8) {
+            password.error = "Password should be minimum 8 characters"
+            password.requestFocus()
+            return;
+        }
+
+        if (!password.text.toString().matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[!@#$%^&*+=?-]).{8,15}$".toRegex())){
+            password.error = "Password should contain Numbers, Alphabets,[@#$%^&+=] one of the symbol"
+            password.requestFocus()
             return;
         }
 
         firebaseAuth
-                ?.createUserWithEmailAndPassword(email, password)
-                ?.addOnCompleteListener(object: OnCompleteListener<AuthResult> {
-                    @Override
-                    override fun onComplete(task: Task<AuthResult>) {
+            ?.createUserWithEmailAndPassword(email.text.toString(), password.text.toString())
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(applicationContext, "Registration Successful", Toast.LENGTH_LONG).show()
 
-                        if (task.isSuccessful){
-                            Toast.makeText(applicationContext,"Registration Successful",Toast.LENGTH_LONG).show()
+                    val intent = Intent(this@SignupActivity, MainActivity::class.java)
+                    startActivity(intent)
 
-                            val intent = Intent(this@SignupActivity,
-                                    MainActivity::class.java)
-                            startActivity(intent)
-                        }
-
-                        else{
-                            Toast.makeText(applicationContext,"Registration Failed!!!" + "Please Try again later",Toast.LENGTH_LONG).show()
-                        }
-                    }
-                })
+                } else {
+                    Toast.makeText(applicationContext, "Registration Failed!!!" + "Please Try again later", Toast.LENGTH_LONG).show()
+                }
+            }
     }
 
     fun setupHyperlink(view: View) {
         val linkTextView = findViewById<TextView>(R.id.hyperlink_TextView)
         linkTextView.setLinkTextColor(Color.BLUE)
-        linkTextView.setOnClickListener{
+        linkTextView.setOnClickListener {
             val switchActivityIntent = Intent(this, MainActivity::class.java)
             startActivity(switchActivityIntent)
         }
     }
-
 }

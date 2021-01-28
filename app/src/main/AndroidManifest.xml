@@ -27,9 +27,13 @@
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
         -->
+<!--
         <activity android:name=".ForgotPasswordActivity" />
+-->
         <activity android:name=".SignupActivity" />
+<!--
         <activity android:name=".RegistrationActivitySecondPage" />
+-->
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
