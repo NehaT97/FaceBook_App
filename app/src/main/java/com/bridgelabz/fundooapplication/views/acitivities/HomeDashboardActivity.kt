@@ -29,10 +29,6 @@ class HomeDashboardActivity : AppCompatActivity() {
             Toast.makeText(applicationContext, "YOU CLICKED!!!!", Toast.LENGTH_LONG).show()
             val navigateToSecondDashboardActivity = Intent(this, SecondDashboardActivity::class.java)
             startActivity(navigateToSecondDashboardActivity)
-            /* findViewById<FrameLayout>(id.homeActivity).removeAllViews()
-             val addNoteFragment = AddNoteFragment()
-             supportFragmentManager.beginTransaction().add(id.homeActivity, addNoteFragment)
-                 .addToBackStack(null).commit()*/
         }
     }
 

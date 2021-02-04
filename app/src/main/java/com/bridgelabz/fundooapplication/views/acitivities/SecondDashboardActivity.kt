@@ -9,11 +9,4 @@ class SecondDashboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_second_dashboard)
     }
-
-    /* override fun onStart() {
-         super.onStart()
-         val addNoteFragment = AddNoteFragment()
-         supportFragmentManager.beginTransaction()
-             .add(R.id.Second_Dashboard_activity, addNoteFragment).commit()
-     }*/
 }
