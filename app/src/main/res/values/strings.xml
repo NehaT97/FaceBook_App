@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FacebookApplication</string>
+    <string name="app_name">FundooApp</string>
     <string name="title_activity_second_page_login">SecondPageLoginActivity</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -28,4 +28,11 @@
     <string name="or">or</string>
     <string name="register">Register</string>
     <string name="textLoading">Loading</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_home_dash_board">HomeDashBoardActivity</string>
+    <string name="fundoo">Fundoo</string>
+    <string name="note">note</string>
+    <string name="drawer_open">DrawerOpen</string>
+    <string name="drawer_close">DrawerClose</string>
 </resources>

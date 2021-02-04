@@ -12,7 +12,7 @@
     android:background="@color/design_default_color_secondary_variant"
     android:backgroundTint="#DC0675CD"
     android:textAlignment="center"
-    tools:context=".MainActivity">
+    tools:context=".views.mainactivityview.MainActivity">
 
     <Button
         android:id="@+id/Register_button"

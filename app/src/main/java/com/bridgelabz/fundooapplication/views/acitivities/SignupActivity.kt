@@ -1,4 +1,4 @@
-package com.bridgelabz.fundooapplication
+package com.bridgelabz.fundooapplication.views.acitivities
 
 import android.content.Intent
 import android.graphics.Color
@@ -10,6 +10,8 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bridgelabz.fundooapplication.R
+import com.bridgelabz.fundooapplication.views.mainactivityview.MainActivity
 import com.google.firebase.auth.FirebaseAuth
 
 class SignupActivity : AppCompatActivity() {

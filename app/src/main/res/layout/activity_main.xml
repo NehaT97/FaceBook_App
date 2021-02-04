@@ -8,7 +8,7 @@
     android:backgroundTint="#DC0675CD"
     android:textAlignment="center"
     app:flow_horizontalAlign="start"
-    tools:context=".MainActivity">
+    tools:context=".views.mainactivityview.MainActivity">
 
 
     <Button

@@ -1,4 +1,4 @@
-package com.bridgelabz.fundooapplication
+package com.bridgelabz.fundooapplication.views.mainactivityview
 
 import android.content.Intent
 import android.graphics.Color
@@ -13,7 +13,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.bridgelabz.fundooapplication.R
 import com.bridgelabz.fundooapplication.loadingAlertDialog.ProgressLoader
+import com.bridgelabz.fundooapplication.views.acitivities.HomeDashboardActivity
+import com.bridgelabz.fundooapplication.views.acitivities.SignupActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -89,8 +92,13 @@ class MainActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("TAG", "signInWithCredential:success")
-                    val intentToFacebookHome = Intent(this, FacebookHomePage::class.java)
-                    startActivity(intentToFacebookHome)
+                   /* val intentToFacebookHome = Intent(this,
+                        FacebookHomePage::class.java)
+                    startActivity(intentToFacebookHome)*/
+
+                    val intentToDashboard = Intent(this,HomeDashboardActivity::class.java)
+                    startActivity(intentToDashboard)
+
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w("TAG", "signInWithCredential:failure", task.exception)
@@ -144,7 +152,7 @@ class MainActivity : AppCompatActivity() {
                     ).show();
 
                     /* If login Successful */
-                    val intent = Intent(this@MainActivity, FacebookHomePage::class.java)
+                    val intent = Intent(this@MainActivity, HomeDashboardActivity::class.java)
                     startActivity(intent)
 
                 } else {

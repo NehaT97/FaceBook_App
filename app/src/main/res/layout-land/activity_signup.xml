@@ -12,7 +12,7 @@
     android:background="#DDF3EBEB"
     android:backgroundTint="#AE0675CD"
     android:visibility="visible"
-    tools:context=".SignupActivity"
+    tools:context=".views.acitivities.SignupActivity"
     tools:ignore="ExtraText">
 
     <TextView
