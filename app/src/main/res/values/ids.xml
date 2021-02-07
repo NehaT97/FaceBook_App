@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="menuButton" type="id"></item>
+    <item name="nav_view" type="id"></item>
+    <item name="description" type="id"></item>
 </resources>

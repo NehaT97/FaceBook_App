@@ -12,7 +12,7 @@
         tools:context="views.fragments.AddNoteFragment">
 
         <EditText
-            android:id="@+id/editTextTittle"
+            android:id="@+id/UserTitle"
             android:layout_width="382dp"
             android:layout_height="60dp"
             android:layout_marginStart="8dp"
@@ -23,14 +23,14 @@
             android:hint="Tittle"
             android:inputType="textPersonName"
             android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@+id/editTextNotes"
+            app:layout_constraintBottom_toTopOf="@+id/UserNote"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <EditText
-            android:id="@+id/editTextNotes"
+            android:id="@+id/UserNote"
             android:layout_width="382dp"
             android:layout_height="600dp"
             android:layout_marginStart="8dp"
@@ -46,7 +46,14 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTittle" />
+            app:layout_constraintTop_toBottomOf="@+id/UserTitle" />
+
+      <!--  <TextView
+            android:id="@+id/textView_displayData"
+            android:layout_width="332dp"
+            android:layout_height="600dp"
+            android:text=""
+            tools:ignore="MissingConstraints" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

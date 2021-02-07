@@ -24,6 +24,23 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+
+  <!--  <include
+        android:id="@+id/contain_layout"
+        layout="@layout/fragment_recycler_view"
+        android:layout_width="match_parent"
+        android:ma="match_parent"
+        android:layout_marginTop="65dp"/>
+-->
+    <!--<fragment
+        android:id="@+id/fragmentRecycle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="65dp"
+        android:name="com.bridgelabz.fundooapplication.views.fragments.RecyclerViewFragment"
+        />-->
+
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addNotesFab"
         android:layout_width="wrap_content"

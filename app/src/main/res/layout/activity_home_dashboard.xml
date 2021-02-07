@@ -8,6 +8,13 @@
     android:layout_height="match_parent"
     tools:context=".views.acitivities.HomeDashboardActivity">
 
+    <fragment
+        android:id="@+id/fragmentRecycle"
+        android:name="com.bridgelabz.fundooapplication.views.fragments.RecyclerViewFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="100dp"
+        />
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
@@ -21,6 +28,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+
+
+
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/nav_view"
             android:layout_width="wrap_content"
@@ -29,7 +39,11 @@
             android:fitsSystemWindows="true"
             app:headerLayout="@layout/nav_header"
             app:menu="@menu/drawable_navigation_menu" />
+
     </androidx.drawerlayout.widget.DrawerLayout>
+
+
+
 
 </FrameLayout>
 
