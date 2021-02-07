@@ -15,23 +15,19 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class SecondDashboardActivity : AppCompatActivity() {
 
-    private val mDocRef: DocumentReference =
-        FirebaseFirestore.getInstance().collection("Notes").document()
-
-    private val TITLE_KEY: String = "title"
-    private val DESCRIPTION_KEY: String = "note"
-    private val NOTE_ID: String = "id"
+    private val firebaseFirestore:FirebaseFirestore = FirebaseFirestore.getInstance()
+    private var collectionReference:CollectionReference = firebaseFirestore.collection("Notes")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_second_dashboard)
 
         saveNoteByBackArrow()
-        retrievedNoteFromFirestore()
+        //retrievedNoteFromFirestore()
 
     }
 
-    private fun retrievedNoteFromFirestore() {
+    /*private fun retrievedNoteFromFirestore() {
         val resultData = findViewById<TextView>(R.id.textView_displayData)
         mDocRef.collection("Notes").get().addOnCompleteListener {
             val result1 = StringBuffer()
@@ -45,7 +41,7 @@ class SecondDashboardActivity : AppCompatActivity() {
             }
         }
     }
-
+*/
     private fun saveNoteByBackArrow() {
         val toolbar2 = findViewById<Toolbar>(R.id.toolbarSecond)
         toolbar2.setNavigationOnClickListener {
@@ -68,14 +64,12 @@ class SecondDashboardActivity : AppCompatActivity() {
          if (userTitle.isEmpty() || userDescription.isEmpty()) {
              return
          }
-         val dataToSave: HashMap<String, String> = HashMap()
-         dataToSave[TITLE_KEY] = userTitle
-         dataToSave[DESCRIPTION_KEY] = userDescription
-        // dataToSave[NOTE_ID] = noteId
-         mDocRef.set(dataToSave).addOnSuccessListener {
-             Log.i("SUCCESS", "Documents has been Saved!!!")
-         }.addOnFailureListener {
-             Log.i("FAILED", "Documents Not Saved!!!")
-         }
+        val note = Note(userTitle,userDescription)
+        collectionReference.add(note).addOnCompleteListener {
+            Log.i("SUCCESS", "Documents has been Saved!!!")
+
+        }.addOnFailureListener {
+            Log.i("FAILED", "Documents Not Saved!!!")
+        }
     }
 }
