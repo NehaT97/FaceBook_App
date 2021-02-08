@@ -14,46 +14,49 @@ import com.bridgelabz.fundooapplication.R
 import com.bridgelabz.fundooapplication.R.*
 import com.bridgelabz.fundooapplication.adapter.NoteAdapter
 import com.bridgelabz.fundooapplication.model.Note
+import com.bridgelabz.fundooapplication.repository.FirebaseRepository
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestore
-import java.util.*
 
 
 class HomeDashboardActivity : AppCompatActivity() {
     lateinit var mDrawerLayout: DrawerLayout
     lateinit var mDrawerToggle: ActionBarDrawerToggle
-    private val mDocRef: FirebaseFirestore =
-        FirebaseFirestore.getInstance()
+    val firebaseRepository: FirebaseRepository = FirebaseRepository()
     private var notesList: List<Note> = ArrayList()
-    var noteAdapter: NoteAdapter = NoteAdapter(notesList)
+    private val noteAdapter: NoteAdapter = NoteAdapter(notesList)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(layout.activity_home_dashboard)
         addActionBarDrawerToggle()
         navigateToSecondDashboard()
-        recyclerView()
+        checkUserIsLoggedIn()
+        recyclerViewToDisplayNotes()
     }
 
-
-    private fun recyclerView() {
+    private fun recyclerViewToDisplayNotes() {
         val recyclerView = findViewById<RecyclerView>(R.id.fragmentRecycle)
-        //var Notes = ArrayList<Note>()
-
         recyclerView.layoutManager = LinearLayoutManager(this)
-        // Notes.add(Note("Neha", "Maharashtra"))
+        recyclerView.adapter = noteAdapter
+    }
 
-        /*  mDocRef.collection("Notes").get().addOnCompleteListener{
-              if (it.isSuccessful){
-                  notesList = it.result!!.toObjects(Note::class.java)
-                  noteAdapter.notes = notesList
-                  noteAdapter.notifyDataSetChanged()
-                 recyclerView.adapter = noteAdapter
-              }else{
-                  Log.d("ERROR","ERROR:${it.exception?.message}")
-              }
-          }*/
+    private fun checkUserIsLoggedIn() {
+        if (firebaseRepository.getUser() != null)
+            loadNotesData()
+    }
+
+    private fun loadNotesData() {
+        val user = firebaseRepository.getUser()
+        val userEmail = user?.email
+        if (userEmail != null) {
+            firebaseRepository.getNoteList(userEmail).addOnCompleteListener{
+                if (it.isSuccessful) {
+                    notesList = it.result!!.toObjects(Note::class.java)
+                    noteAdapter.notes = notesList
+                    noteAdapter.notifyDataSetChanged()
+                }
+            }
+        }
     }
 
     private fun navigateToSecondDashboard() {

@@ -8,6 +8,10 @@
     android:layout_height="match_parent"
     tools:context=".views.acitivities.HomeDashboardActivity">
 
+
+    <!--<include layout="@layout/fragment_recycler_view"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"></include>-->
     <fragment
         android:id="@+id/fragmentRecycle"
         android:name="com.bridgelabz.fundooapplication.views.fragments.RecyclerViewFragment"
@@ -15,6 +19,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="100dp"
         />
+
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"

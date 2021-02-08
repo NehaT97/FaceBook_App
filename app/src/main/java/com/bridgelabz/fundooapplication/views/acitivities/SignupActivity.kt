@@ -91,7 +91,7 @@ class SignupActivity : AppCompatActivity() {
         if (password.text.toString().length < 8) {
             password.error = "Password should be minimum 8 characters"
             password.requestFocus()
-            return;
+              return;
         }
 
         if (!password.text.toString().matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[!@#$%^&*+=?-]).{8,15}$".toRegex())){
