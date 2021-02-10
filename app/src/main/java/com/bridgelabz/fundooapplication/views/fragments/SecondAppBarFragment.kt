@@ -1,6 +1,7 @@
 package com.bridgelabz.fundooapplication.views.fragments
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,6 +21,10 @@ class SecondAppBarFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_second_app_bar, container, false)
         val toolbarSecond = view.findViewById<Toolbar>(R.id.toolbarSecond)
+        val white = "#ffffff"
+        val whiteInt: Int = Color.parseColor(white)
+        toolbarSecond.navigationIcon?.setTint(whiteInt)
+        toolbarSecond.setTitle("Note")
         toolbarSecond.setNavigationOnClickListener {
             Log.i("Great", "You Clicked")
             val navigateBackToHomeDashboard = Intent(context, HomeDashboardActivity::class.java)

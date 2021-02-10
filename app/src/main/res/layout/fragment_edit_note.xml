@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/Edit_Note_Layout"
+    tools:context=".views.fragments.EditNoteFragment">
+
+    <com.google.android.material.appbar.AppBarLayout android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/Third_App_bar">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarThird"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="1dp"
+            android:background="@drawable/toolbar_background"
+            android:minHeight="?attr/actionBarSize"
+            app:navigationIcon="?attr/homeAsUpIndicator"
+            app:titleTextColor="@color/white"
+            app:title="Edit Note"
+            />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+  <!--  <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="views.fragments.AddNoteFragment">-->
+
+<!--
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+-->
+
+
+
+        <EditText
+            android:id="@+id/Edit_Title"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="65dp"
+            android:layout_marginEnd="8dp"
+            android:background="@color/white"
+            android:ems="10"
+            android:hint="Title1"
+            android:inputType="textPersonName"
+            android:textSize="24sp"
+         />
+
+    <EditText
+        android:id="@+id/Edit_description"
+        android:layout_width="395dp"
+        android:layout_height="514dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="#FFFFFF"
+        android:bufferType="editable"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="description1"
+        android:inputType="textMultiLine" />
+
+<!--
+    </androidx.constraintlayout.widget.ConstraintLayout>
+-->
+
+
+</FrameLayout>
+
+

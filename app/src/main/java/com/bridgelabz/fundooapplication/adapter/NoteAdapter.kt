@@ -2,6 +2,7 @@ package com.bridgelabz.fundooapplication.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bridgelabz.fundooapplication.R
@@ -9,6 +10,15 @@ import com.bridgelabz.fundooapplication.model.Note
 
 
 class NoteAdapter(var notes: List<Note>) : RecyclerView.Adapter<NoteViewHolder>() {
+    private var mOnItemClickLister: OnItemClickListener? = null
+
+    interface OnItemClickListener {
+        fun onItemClicked(view: View?, pos: Int)
+    }
+
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        mOnItemClickLister = listener
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         val displayView = LayoutInflater.from(parent.context)
@@ -24,7 +34,34 @@ class NoteAdapter(var notes: List<Note>) : RecyclerView.Adapter<NoteViewHolder>(
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
         val note = notes[position]
         holder.bind(note)
+        //holder.itemView.setOnClickListener()
         Log.i("ON_BIND_VIEW_HOLDER", "Calling {$position}")
 
+        holder.itemView.setOnClickListener {
+            Log.i("FinallyItem", "Working")
+            mOnItemClickLister?.onItemClicked(it, position)
+
+            //loadingNoteDetails()
+            //val transaction = fragment
+        }
+
     }
+
+    /* private fun loadingNoteDetails() {
+      *//*  Activity activity =(Activity) context;
+        FragmentManager fragmentManager = activity . getFragmentManager ();
+        FragmentTransaction fragmentTransaction = fragmentManager . beginTransaction ()*//*
+        //val EditNoteFragment = EditNoteFragment()
+        val activity: Activity
+        val context:Context
+        FragmentManager.findFragment<Fragment>(R.layout.fragment_edit_note)
+
+
+    }*/
+
+    /* fun deleteItem(position: Int){
+
+
+    }
+*/
 }

@@ -3,11 +3,14 @@
 
     <item
         android:title="Notes"
+        android:checkable="true"
+        android:checked="true"
         android:icon="@drawable/ic_baseline_event_note_24"
         />
 
     <item
         android:title="notification"
+        android:checkable="true"
         android:icon="@drawable/ic_baseline_notifications_24"
         />
 

@@ -32,7 +32,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_home_dash_board">HomeDashBoardActivity</string>
     <string name="fundoo">Fundoo</string>
-    <string name="note">note</string>
+    <string name="note">description</string>
     <string name="drawer_open">DrawerOpen</string>
     <string name="drawer_close">DrawerClose</string>
 </resources>

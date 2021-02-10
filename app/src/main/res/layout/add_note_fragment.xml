@@ -12,7 +12,7 @@
         tools:context="views.fragments.AddNoteFragment">
 
         <EditText
-            android:id="@+id/UserTitle"
+            android:id="@+id/NoteTitle"
             android:layout_width="382dp"
             android:layout_height="60dp"
             android:layout_marginStart="8dp"
@@ -20,17 +20,17 @@
             android:layout_marginEnd="8dp"
             android:background="@color/white"
             android:ems="10"
-            android:hint="Tittle"
+            android:hint="Title"
             android:inputType="textPersonName"
             android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@+id/UserNote"
+            app:layout_constraintBottom_toTopOf="@+id/NoteDescription"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <EditText
-            android:id="@+id/UserNote"
+            android:id="@+id/NoteDescription"
             android:layout_width="382dp"
             android:layout_height="600dp"
             android:layout_marginStart="8dp"
@@ -46,7 +46,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/UserTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/NoteTitle" />
 
       <!--  <TextView
             android:id="@+id/textView_displayData"

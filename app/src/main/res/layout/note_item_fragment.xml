@@ -8,7 +8,10 @@
     android:layout_marginTop="10dp"
     android:layout_marginEnd="10dp"
     android:background="#3F51B5"
-    app:cardBackgroundColor="#5B3F53B5">
+    app:cardBackgroundColor="#5B6078EF"
+    android:clickable="true"
+    >
+
 
     <RelativeLayout
         android:layout_width="match_parent"

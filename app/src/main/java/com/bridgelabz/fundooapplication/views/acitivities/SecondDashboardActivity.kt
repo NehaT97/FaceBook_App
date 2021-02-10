@@ -8,18 +8,32 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.bridgelabz.fundooapplication.R
 import com.bridgelabz.fundooapplication.model.Note
-import com.bridgelabz.fundooapplication.repository.FirebaseRepository
+import com.bridgelabz.fundooapplication.repository.NoteService
+import java.util.*
 
 class SecondDashboardActivity : AppCompatActivity() {
 
-    val firebaseRepository: FirebaseRepository = FirebaseRepository()
+    val noteService: NoteService = NoteService()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_second_dashboard)
 
         saveNoteByBackArrow()
+        recievingData()
 
+    }
+
+    private fun recievingData() {
+        val title = intent.getStringExtra("title")
+        val desc = intent.getStringExtra("desc")
+
+        if (!title.isNullOrEmpty() || !desc.isNullOrEmpty()) {
+            findViewById<EditText>(R.id.NoteTitle).setText(title)
+            findViewById<EditText>(R.id.NoteDescription).setText(desc)
+        }
+
+        Log.i("NoteData", "title : $title, desc: $desc")
     }
 
 
@@ -35,9 +49,9 @@ class SecondDashboardActivity : AppCompatActivity() {
 
     private fun saveNoteToFirestore() {
         Log.i("SAVE_NOTE ", "You In")
-        val title = findViewById<EditText>(R.id.UserTitle).text.toString()
-        val description = findViewById<EditText>(R.id.UserNote).text.toString()
-        val emailId = firebaseRepository.getUser()?.email
+        val title = findViewById<EditText>(R.id.NoteTitle).text.toString()
+        val description = findViewById<EditText>(R.id.NoteDescription).text.toString()
+        val emailId = noteService.getUser()?.email
 
         if (!emailId.isNullOrEmpty()) {
             Log.i("Title Found", "{$title}")
@@ -47,7 +61,7 @@ class SecondDashboardActivity : AppCompatActivity() {
                 return
             }
             val note = Note(emailId, title, description)
-            firebaseRepository.addNote(note)
+            noteService.addNote(note)
         }
     }
 }

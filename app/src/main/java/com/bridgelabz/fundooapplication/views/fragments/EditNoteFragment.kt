@@ -5,23 +5,26 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bridgelabz.fundooapplication.R
+import com.bridgelabz.fundooapplication.adapter.NoteAdapter
 
 
-class RecyclerViewFragment : Fragment() {
-
-
+/**
+ * A simple [Fragment] subclass.
+ * Use the [EditNoteFragment.newInstance] factory method to
+ * create an instance of this fragment.
+ */
+class EditNoteFragment : Fragment() ,NoteAdapter.OnItemClickListener{
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_recycler_view, container, false)
-      /*  val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView1)
-        recyclerView.layoutManager = LinearLayoutManager(context)*/
-        return view
+        return inflater.inflate(R.layout.fragment_edit_note, container, false)
+    }
+
+    override fun onItemClicked(view: View?, pos: Int) {
+
     }
 
 }
