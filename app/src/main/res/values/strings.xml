@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FundooApp</string>
+    <string name="app_name"></string>
     <string name="title_activity_second_page_login">SecondPageLoginActivity</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>

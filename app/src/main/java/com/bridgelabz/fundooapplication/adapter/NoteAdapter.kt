@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
 import com.bridgelabz.fundooapplication.R
 import com.bridgelabz.fundooapplication.model.Note
@@ -14,6 +15,7 @@ class NoteAdapter(var notes: List<Note>) : RecyclerView.Adapter<NoteViewHolder>(
 
     interface OnItemClickListener {
         fun onItemClicked(view: View?, pos: Int)
+        fun onDeleteButtonClicked(view: View?, pos: Int)
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
@@ -40,28 +42,12 @@ class NoteAdapter(var notes: List<Note>) : RecyclerView.Adapter<NoteViewHolder>(
         holder.itemView.setOnClickListener {
             Log.i("FinallyItem", "Working")
             mOnItemClickLister?.onItemClicked(it, position)
+        }
 
-            //loadingNoteDetails()
-            //val transaction = fragment
+        holder.itemView.findViewById<Button>(R.id.deleteButton).setOnClickListener {
+            Log.i("Delete", "button clicked")
+            mOnItemClickLister?.onDeleteButtonClicked(it, position)
         }
 
     }
-
-    /* private fun loadingNoteDetails() {
-      *//*  Activity activity =(Activity) context;
-        FragmentManager fragmentManager = activity . getFragmentManager ();
-        FragmentTransaction fragmentTransaction = fragmentManager . beginTransaction ()*//*
-        //val EditNoteFragment = EditNoteFragment()
-        val activity: Activity
-        val context:Context
-        FragmentManager.findFragment<Fragment>(R.layout.fragment_edit_note)
-
-
-    }*/
-
-    /* fun deleteItem(position: Int){
-
-
-    }
-*/
 }

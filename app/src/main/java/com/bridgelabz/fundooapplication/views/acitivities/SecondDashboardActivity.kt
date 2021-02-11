@@ -18,32 +18,56 @@ class SecondDashboardActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_second_dashboard)
-
+        receivingDataFromIntent()
         saveNoteByBackArrow()
-        recievingData()
-
     }
 
-    private fun recievingData() {
+    private fun receivingDataFromIntent() {
         val title = intent.getStringExtra("title")
         val desc = intent.getStringExtra("desc")
-
         if (!title.isNullOrEmpty() || !desc.isNullOrEmpty()) {
             findViewById<EditText>(R.id.NoteTitle).setText(title)
             findViewById<EditText>(R.id.NoteDescription).setText(desc)
         }
-
         Log.i("NoteData", "title : $title, desc: $desc")
     }
-
 
     private fun saveNoteByBackArrow() {
         val toolbar2 = findViewById<Toolbar>(R.id.toolbarSecond)
         toolbar2.setNavigationOnClickListener {
             Log.i("Arrow ", "Clicked")
-            saveNoteToFirestore()
+            saveNote()
             val navigateBackToHomeDashboard = Intent(this, HomeDashboardActivity::class.java)
             startActivity(navigateBackToHomeDashboard)
+        }
+    }
+
+    private fun saveNote() {
+        val isUpdateOperation= intent.getBooleanExtra("isUpdateOperation", false)
+        if (isUpdateOperation) {
+            val noteId = intent.getStringExtra("noteId")
+            val userId = intent.getStringExtra("userId")
+            val title = findViewById<EditText>(R.id.NoteTitle).text.toString()
+            val description = findViewById<EditText>(R.id.NoteDescription).text.toString()
+            val note= Note(noteId, userId, title, description)
+            val id = noteService.findNoteByNoteId(noteId).addOnCompleteListener {
+                if (it.isComplete) {
+                    val isResult = it.result!!.any()
+                    if (isResult) {
+                        val id = it.result!!.documents[0].id
+                        noteService.update(id, note)
+                    }
+                }
+            }
+            Log.i("Update note operation", "$note")
+        } else {
+            val title = findViewById<EditText>(R.id.NoteTitle).text.toString()
+            val description = findViewById<EditText>(R.id.NoteDescription).text.toString()
+            val emailId = noteService.getUser()?.email
+            if (!emailId.isNullOrEmpty()) {
+                val note = Note(UUID.randomUUID().toString(), emailId, title, description)
+                noteService.addNote(note)
+            }
         }
     }
 
@@ -60,7 +84,7 @@ class SecondDashboardActivity : AppCompatActivity() {
             if (title.isEmpty() || description.isEmpty()) {
                 return
             }
-            val note = Note(emailId, title, description)
+            val note = Note(UUID.randomUUID().toString(), emailId, title, description)
             noteService.addNote(note)
         }
     }

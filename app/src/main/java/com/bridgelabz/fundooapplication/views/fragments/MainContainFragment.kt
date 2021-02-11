@@ -1,16 +1,13 @@
 package com.bridgelabz.fundooapplication.views.fragments
 
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Toolbar
-import androidx.cardview.widget.CardView
+import android.view.*
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.bridgelabz.fundooapplication.R
-
 
 class MainContainFragment : Fragment() {
 
@@ -20,18 +17,12 @@ class MainContainFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.main_contain_fragment, container, false)
         val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
+        (activity as AppCompatActivity?)!!.setSupportActionBar(toolbar)
+        setHasOptionsMenu(true)
 
-        backButtonColor(toolbar)
         return view
     }
-
-
-    private fun backButtonColor(toolbar: Toolbar?) {
-        val white = "#ffffff"
-        val whiteInt: Int = Color.parseColor(white)
-        if (toolbar != null) {
-            toolbar.navigationIcon?.setTint(whiteInt)
-        }
-    }
 }
+
+
 

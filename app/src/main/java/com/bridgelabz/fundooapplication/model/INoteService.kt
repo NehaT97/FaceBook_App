@@ -5,10 +5,10 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.QuerySnapshot
 
-interface INoteService
-{
+interface INoteService {
     fun getUser(): FirebaseUser?
     fun addNote(notes: Note): Task<DocumentReference>
     fun getNoteList(userId: String): Task<QuerySnapshot>
-    fun update(notes:Note): DocumentReference
+    fun update(documentId:String, note: Note)
+    fun findNoteByNoteId(noteId: String): Task<QuerySnapshot>
 }

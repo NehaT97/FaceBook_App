@@ -15,16 +15,14 @@ class NoteService : INoteService {
     private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firebaseStore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-   /* fun update(notes: Note){
-        return firebaseStore.collection("Notes")
-    }*/
 
     override fun getUser(): FirebaseUser? {
         return firebaseAuth.currentUser
     }
 
-    fun DocumentId(){
-    }
+    /* fun DocumentId(){
+         firebaseStore.collection("Notes").document().
+     }*/
 
     override fun addNote(notes: Note): Task<DocumentReference> {
         return firebaseStore.collection("Notes").add(notes)
@@ -35,16 +33,15 @@ class NoteService : INoteService {
             }
     }
 
-     override fun getNoteList(userId: String): Task<QuerySnapshot> {
+    override fun getNoteList(userId: String): Task<QuerySnapshot> {
         return firebaseStore.collection("Notes").whereEqualTo("userId", userId).get()
     }
 
-    override fun update(notes: Note): DocumentReference {
-        //firebaseStore.collection("Notes").document().update()
-        val specificDocument =  firebaseStore.collection("Notes").document()
-        Log.i("Document Id", specificDocument.id)
-        return specificDocument
+    override fun findNoteByNoteId(noteId: String): Task<QuerySnapshot> {
+        return firebaseStore.collection("Notes").whereEqualTo("noteId", noteId).get()
     }
 
-
+    override fun update(documentId:String, notes: Note) {
+        firebaseStore.collection("Notes").document(documentId).set(notes)
+    }
 }

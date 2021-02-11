@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
     private val RC_SIGN_IN: Int = 123
-    var firebaseAuth: FirebaseAuth? = null
     lateinit var signInByGoogleBtn: SignInButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,8 +74,8 @@ class MainActivity : AppCompatActivity() {
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)!!
-                Log.d("***********", "firebaseAuthWithGoogle:successfull" + account.id)
-                firebaseAuthWithGoogle(account.idToken!!)
+                Log.d("***********", "authWithGoogle:successfull" + account.id)
+                authWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
                 Log.w("***********", "Google sign in failed", e)
@@ -85,7 +84,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun firebaseAuthWithGoogle(idToken: String) {
+    private fun authWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
@@ -107,7 +106,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun appLogin(view: View) {
-        firebaseAuth = FirebaseAuth.getInstance()
+        auth = FirebaseAuth.getInstance()
         val loginButton = findViewById<Button>(R.id.login_button)
 
         /* Set on Click Listener on login button(Login Functionality) */
@@ -139,7 +138,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         /* signing existing user */
-        firebaseAuth?.signInWithEmailAndPassword(
+        auth?.signInWithEmailAndPassword(
             emailLogin.text.toString(),
             passwordLogin.text.toString()
         )

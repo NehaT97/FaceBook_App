@@ -15,21 +15,28 @@ import com.bridgelabz.fundooapplication.views.acitivities.HomeDashboardActivity
 
 class SecondAppBarFragment : Fragment() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_second_app_bar, container, false)
         val toolbarSecond = view.findViewById<Toolbar>(R.id.toolbarSecond)
-        val white = "#ffffff"
-        val whiteInt: Int = Color.parseColor(white)
-        toolbarSecond.navigationIcon?.setTint(whiteInt)
-        toolbarSecond.setTitle("Note")
-        toolbarSecond.setNavigationOnClickListener {
+
+        setBackNavigationIconColor(toolbarSecond)
+        navigateToHomeDashboard(toolbarSecond)
+        return view
+    }
+
+    private fun navigateToHomeDashboard(toolbarSecond: Toolbar?) {
+        toolbarSecond?.setNavigationOnClickListener {
             Log.i("Great", "You Clicked")
             val navigateBackToHomeDashboard = Intent(context, HomeDashboardActivity::class.java)
             startActivity(navigateBackToHomeDashboard)
         }
-        return view
+    }
+
+    private fun setBackNavigationIconColor(toolbarSecond: Toolbar) {
+        val white = "#ffffff"
+        val whiteInt: Int = Color.parseColor(white)
+        toolbarSecond.navigationIcon?.setTint(whiteInt)
+        toolbarSecond.title = "Note"
     }
 }
