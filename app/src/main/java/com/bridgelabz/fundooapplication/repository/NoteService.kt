@@ -20,10 +20,6 @@ class NoteService : INoteService {
         return firebaseAuth.currentUser
     }
 
-    /* fun DocumentId(){
-         firebaseStore.collection("Notes").document().
-     }*/
-
     override fun addNote(notes: Note): Task<DocumentReference> {
         return firebaseStore.collection("Notes").add(notes)
             .addOnCompleteListener {

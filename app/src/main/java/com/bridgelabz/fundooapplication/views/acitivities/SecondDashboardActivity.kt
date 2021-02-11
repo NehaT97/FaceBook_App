@@ -71,21 +71,5 @@ class SecondDashboardActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveNoteToFirestore() {
-        Log.i("SAVE_NOTE ", "You In")
-        val title = findViewById<EditText>(R.id.NoteTitle).text.toString()
-        val description = findViewById<EditText>(R.id.NoteDescription).text.toString()
-        val emailId = noteService.getUser()?.email
 
-        if (!emailId.isNullOrEmpty()) {
-            Log.i("Title Found", "{$title}")
-            Log.i("Note Found", "{$description}")
-
-            if (title.isEmpty() || description.isEmpty()) {
-                return
-            }
-            val note = Note(UUID.randomUUID().toString(), emailId, title, description)
-            noteService.addNote(note)
-        }
-    }
 }
