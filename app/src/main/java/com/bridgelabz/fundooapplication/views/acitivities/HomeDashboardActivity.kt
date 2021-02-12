@@ -85,7 +85,8 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
                         Log.i("DocumentId1","${documentid}")
                     }
                     notesList = ArrayList(it.result!!.toObjects(Note::class.java))
-                    noteAdapter.notes = notesList
+                  //  noteAdapter.notes = notesList
+                    noteAdapter.updateList(notesList)
                     noteAdapter.notifyDataSetChanged()
                 }
             }
@@ -102,7 +103,9 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText.isNullOrBlank()) {
-                    noteAdapter.notes = notesList
+                    //noteAdapter.notes = notesList
+                    noteAdapter.updateList(notesList)
+
                 }
                 noteAdapter.filter.filter(newText)
                 return true
@@ -186,7 +189,8 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
 
     override fun onDeleteButtonClicked(view: View?, pos: Int) {
         notesList.remove(notesList[pos])
-        noteAdapter.notes = notesList
+      //  noteAdapter.note = notesList
+        noteAdapter.updateList(notesList)
         noteAdapter.notifyItemRemoved(pos)
     }
 
@@ -202,6 +206,8 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         }
         return true
     }
+
+
 }
 
 

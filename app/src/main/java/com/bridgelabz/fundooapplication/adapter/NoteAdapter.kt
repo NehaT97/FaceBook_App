@@ -12,7 +12,7 @@ import com.bridgelabz.fundooapplication.R
 import com.bridgelabz.fundooapplication.model.Note
 
 
-class NoteAdapter(var notes: ArrayList<Note>) : RecyclerView.Adapter<NoteViewHolder>(), Filterable {
+class NoteAdapter(private var notes: ArrayList<Note>) : RecyclerView.Adapter<NoteViewHolder>(), Filterable {
     private var mOnItemClickLister: OnItemClickListener? = null
     private var noteListTemp = ArrayList<Note>(notes)
 
@@ -55,7 +55,7 @@ class NoteAdapter(var notes: ArrayList<Note>) : RecyclerView.Adapter<NoteViewHol
     }
 
     override fun getFilter(): Filter {
-        noteListTemp = notes
+        //noteListTemp = notes
         val filter = object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 Log.i("Note List Notes", "$noteListTemp")
@@ -77,13 +77,20 @@ class NoteAdapter(var notes: ArrayList<Note>) : RecyclerView.Adapter<NoteViewHol
             }
 
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                notes.clear()
-                notes.addAll(results?.values as Collection<Note>)
+               // notes.clear()
+              //  notes.addAll(results?.values as Collection<Note>)
+                notes = results?.values as ArrayList<Note>
                 Log.i("noteList", "$notes")
                 notifyDataSetChanged()
             }
         }
-        notes = noteListTemp
+       // notes = noteListTemp
         return filter
+    }
+
+    fun updateList(notesList:ArrayList<Note>){
+        this.notes = notesList
+        this.noteListTemp = notesList
+        notifyDataSetChanged()
     }
 }
