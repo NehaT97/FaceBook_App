@@ -5,13 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.bridgelabz.fundooapplication.R
 import com.bridgelabz.fundooapplication.model.Note
 
 
-class NoteAdapter(var notes: List<Note>) : RecyclerView.Adapter<NoteViewHolder>() {
+class NoteAdapter(var notes: ArrayList<Note>) : RecyclerView.Adapter<NoteViewHolder>(), Filterable {
     private var mOnItemClickLister: OnItemClickListener? = null
+    private var noteListTemp = ArrayList<Note>(notes)
 
     interface OnItemClickListener {
         fun onItemClicked(view: View?, pos: Int)
@@ -49,5 +52,38 @@ class NoteAdapter(var notes: List<Note>) : RecyclerView.Adapter<NoteViewHolder>(
             mOnItemClickLister?.onDeleteButtonClicked(it, position)
         }
 
+    }
+
+    override fun getFilter(): Filter {
+        noteListTemp = notes
+        val filter = object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                Log.i("Note List Notes", "$noteListTemp")
+                val filteredNotes = ArrayList<Note>()
+                if (constraint.isNullOrBlank() || constraint.isNullOrEmpty()) {
+                    filteredNotes.addAll(noteListTemp)
+                } else {
+                    val filterPattern = constraint.toString().toLowerCase().trim()
+                    for (note: Note in noteListTemp) {
+                        if (note.title.toLowerCase().contains(filterPattern)) {
+                            filteredNotes.add(note)
+                        }
+                    }
+                }
+                val filterResults = FilterResults()
+                Log.i("Filtered Notes", "$filteredNotes")
+                filterResults.values = filteredNotes
+                return filterResults
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                notes.clear()
+                notes.addAll(results?.values as Collection<Note>)
+                Log.i("noteList", "$notes")
+                notifyDataSetChanged()
+            }
+        }
+        notes = noteListTemp
+        return filter
     }
 }

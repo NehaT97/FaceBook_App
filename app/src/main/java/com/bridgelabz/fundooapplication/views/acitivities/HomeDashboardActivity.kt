@@ -8,10 +8,10 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.GridLayout
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -35,7 +35,7 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
     lateinit var mDrawerLayout: DrawerLayout
     lateinit var mDrawerToggle: ActionBarDrawerToggle
     private val noteService: NoteService = NoteService()
-    private var notesList: List<Note> = ArrayList()
+    private var notesList: ArrayList<Note> = ArrayList()
     private val noteAdapter: NoteAdapter = NoteAdapter(notesList)
     private var mainContainFragment: MainContainFragment = MainContainFragment()
     private var isListView: Boolean = true
@@ -84,7 +84,7 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
                         val documentid = documentSnapshot.id
                         Log.i("DocumentId1","${documentid}")
                     }
-                    notesList = it.result!!.toObjects(Note::class.java)
+                    notesList = ArrayList(it.result!!.toObjects(Note::class.java))
                     noteAdapter.notes = notesList
                     noteAdapter.notifyDataSetChanged()
                 }
@@ -92,8 +92,26 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        val searchItem  = menu?.findItem(R.id.search)
+        val searchView= searchItem?.actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return true
+            }
 
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText.isNullOrBlank()) {
+                    noteAdapter.notes = notesList
+                }
+                noteAdapter.filter.filter(newText)
+                return true
+            }
+        })
+
+        return super.onPrepareOptionsMenu(menu)
+    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val menuInflater:MenuInflater  = menuInflater
         menuInflater.inflate(R.menu.home_toolbar_menu,menu)
         return true
@@ -113,6 +131,9 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
                     item.setIcon(R.drawable.ic_list_view)
                     true
                 }
+            }
+            R.id.search -> {
+                Toast.makeText(this,"Searching",Toast.LENGTH_LONG).show()
             }
         }
         return  true
@@ -164,7 +185,7 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
     }
 
     override fun onDeleteButtonClicked(view: View?, pos: Int) {
-        notesList = notesList.minus(notesList[pos])
+        notesList.remove(notesList[pos])
         noteAdapter.notes = notesList
         noteAdapter.notifyItemRemoved(pos)
     }
