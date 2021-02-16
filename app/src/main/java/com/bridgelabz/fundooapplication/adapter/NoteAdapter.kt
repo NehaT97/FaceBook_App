@@ -55,8 +55,7 @@ class NoteAdapter(private var notes: ArrayList<Note>) : RecyclerView.Adapter<Not
     }
 
     override fun getFilter(): Filter {
-        //noteListTemp = notes
-        val filter = object : Filter() {
+        return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 Log.i("Note List Notes", "$noteListTemp")
                 val filteredNotes = ArrayList<Note>()
@@ -84,8 +83,6 @@ class NoteAdapter(private var notes: ArrayList<Note>) : RecyclerView.Adapter<Not
                 notifyDataSetChanged()
             }
         }
-       // notes = noteListTemp
-        return filter
     }
 
     fun updateList(notesList:ArrayList<Note>){

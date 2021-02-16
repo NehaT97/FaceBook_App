@@ -4,6 +4,7 @@ data class Note(
     val noteId: String = " ",
     val userId: String = " ",
     val title: String = " ",
-    val description: String = " "
+    val description: String = " ",
+    var isDeleted: Boolean = false
 ) {
 }

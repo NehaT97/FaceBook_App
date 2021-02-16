@@ -1,5 +1,6 @@
 package com.bridgelabz.fundooapplication.views.acitivities
 
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -27,11 +29,12 @@ import com.bridgelabz.fundooapplication.views.mainactivityview.MainActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentSnapshot
+import java.util.stream.Collectors
 
 
 class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListener,
     NavigationView.OnNavigationItemSelectedListener {
+
     lateinit var mDrawerLayout: DrawerLayout
     lateinit var mDrawerToggle: ActionBarDrawerToggle
     private val noteService: NoteService = NoteService()
@@ -41,17 +44,28 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
     private var isListView: Boolean = true
     private lateinit var auth: FirebaseAuth
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(layout.activity_home_dashboard1)
 
-        addActionBarDrawerToggle()
+        var navigationView = findViewById<NavigationView>(R.id.nav_view)
+        addActionBarDrawerToggle(navigationView)
+        configurePage(navigationView)
+
         navigateToSecondDashboard()
         checkUserIsLoggedIn()
         recyclerViewToDisplayNotesInList()
         auth = FirebaseAuth.getInstance()
-        val navigationView = findViewById<NavigationView>(R.id.nav_view)
-        navigationView.setNavigationItemSelectedListener(this)
+    }
+
+    private fun configurePage(navigationView: NavigationView) {
+        val isTrashPage = intent.getBooleanExtra("isTrashPage", false)
+        if (isTrashPage) {
+            findViewById<TextView>(R.id.toolbarTitle).text = "Trash"
+            navigationView.menu.findItem(R.id.trashPage).isChecked = true
+            navigationView.menu.findItem(R.id.notesPage).isChecked = false
+        }
     }
 
     private fun recyclerViewToDisplayNotesInList() {
@@ -76,16 +90,15 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
     private fun loadNotesData() {
         val user = noteService.getUser()
         val userEmail = user?.email
+        val showDeletedNotes = intent.getBooleanExtra("showDeletedNotes", false)
         if (userEmail != null) {
             noteService.getNoteList(userEmail).addOnCompleteListener {
                 if (it.isSuccessful) {
-
-                    for (documentSnapshot:DocumentSnapshot in it.result!!){
-                        val documentid = documentSnapshot.id
-                        Log.i("DocumentId1","${documentid}")
-                    }
                     notesList = ArrayList(it.result!!.toObjects(Note::class.java))
-                  //  noteAdapter.notes = notesList
+                        .stream()
+                        .filter { note: Note -> showDeletedNotes.equals(note.isDeleted) }
+                        .collect(Collectors.toList()) as ArrayList<Note>
+                    //  noteAdapter.notes = notesList
                     noteAdapter.updateList(notesList)
                     noteAdapter.notifyDataSetChanged()
                 }
@@ -94,8 +107,8 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        val searchItem  = menu?.findItem(R.id.search)
-        val searchView= searchItem?.actionView as SearchView
+        val searchItem = menu?.findItem(R.id.search)
+        val searchView = searchItem?.actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
@@ -114,17 +127,18 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
 
         return super.onPrepareOptionsMenu(menu)
     }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val menuInflater:MenuInflater  = menuInflater
-        menuInflater.inflate(R.menu.home_toolbar_menu,menu)
+        val menuInflater: MenuInflater = menuInflater
+        menuInflater.inflate(R.menu.home_toolbar_menu, menu)
         return true
     }
 
     @Override
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.notesView ->{
-                Toast.makeText(this,"Switched view",Toast.LENGTH_LONG).show()
+        when (item.itemId) {
+            R.id.notesView -> {
+                Toast.makeText(this, "Switched view", Toast.LENGTH_LONG).show()
                 isListView = if (isListView) {
                     recyclerViewToDisplayNotesInGrid()
                     item.setIcon(R.drawable.ic_grid_view_24px)
@@ -136,10 +150,23 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
                 }
             }
             R.id.search -> {
-                Toast.makeText(this,"Searching",Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Searching", Toast.LENGTH_LONG).show()
             }
+            R.id.profile -> {
+                Toast.makeText(this, "Profile", Toast.LENGTH_LONG).show()
+                val profileDialogue = Dialog(this)
+                profileDialogue.setContentView(R.layout.profile_dialogue)
+                val emailTextView = profileDialogue.findViewById<TextView>(R.id.profileEmailId)
+                val usernameTextView = profileDialogue.findViewById<TextView>(R.id.profileUsername)
+                if (auth.currentUser != null) {
+                    usernameTextView.text = auth.currentUser?.displayName
+                    emailTextView.text = auth.currentUser?.email
+                }
+                profileDialogue.show()
+            }
+
         }
-        return  true
+        return true
     }
 
     private fun navigateToSecondDashboard() {
@@ -153,14 +180,10 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         }
     }
 
-    private fun addActionBarDrawerToggle() {
+    private fun addActionBarDrawerToggle(navigationView: NavigationView) {
         val toolbar = findViewById<Toolbar?>(id.toolbar)
         setSupportActionBar(toolbar)
-        var navigationView = findViewById<NavigationView>(R.id.nav_view);
-
-        navigationView.menu.getItem(0).isCheckable = true
-        navigationView.menu.getItem(1).isCheckable = true
-        navigationView.menu.getItem(0).isChecked = true
+        navigationView.setNavigationItemSelectedListener(this)
         mDrawerLayout = findViewById(id.drawer_layout)
         mDrawerToggle = ActionBarDrawerToggle(
             this,
@@ -188,19 +211,47 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
     }
 
     override fun onDeleteButtonClicked(view: View?, pos: Int) {
-        notesList.remove(notesList[pos])
-      //  noteAdapter.note = notesList
-        noteAdapter.updateList(notesList)
-        noteAdapter.notifyItemRemoved(pos)
+        var note = notesList[pos]
+        notesList.removeAt(pos)
+        note.isDeleted = !note.isDeleted
+        val ref = noteService.findNoteByNoteId(note.noteId).addOnCompleteListener {
+            if (it.isComplete) {
+                if (it.result!!.any()) {
+                    //  noteAdapter.note = notesList
+                    val docId = it.result!!.documents[0].id
+                    noteService.update(docId, note)
+                    noteAdapter.updateList(notesList)
+                    noteAdapter.notifyDataSetChanged()
+                }
+            }
+        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
+        when (item.itemId) {
             R.id.nav_logout -> {
                 auth.signOut()
-                Toast.makeText(baseContext,"Logged Out",Toast.LENGTH_SHORT).show()
-                var intent = Intent(this,MainActivity::class.java)
+                Toast.makeText(baseContext, "Logged Out", Toast.LENGTH_SHORT).show()
+                var intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
+                finish()
+            }
+
+            R.id.trashPage -> {
+                Toast.makeText(baseContext, "Opening Trash Page", Toast.LENGTH_SHORT).show()
+                var newIntent = Intent(this, HomeDashboardActivity::class.java)
+                newIntent.putExtra("showDeletedNotes", true)
+                newIntent.putExtra("isTrashPage", true)
+                startActivity(newIntent)
+                finish()
+            }
+
+            R.id.notesPage -> {
+                Toast.makeText(baseContext, "Opening Notes Page", Toast.LENGTH_SHORT).show()
+                var newIntent = Intent(this, HomeDashboardActivity::class.java)
+                newIntent.putExtra("showDeletedNotes", false)
+                newIntent.putExtra("isTrashPage", false)
+                startActivity(newIntent)
                 finish()
             }
         }
