@@ -40,5 +40,14 @@
             android:layout_alignParentRight="true"
             android:background="@drawable/ic_baseline_delete_outline_24"
             />
+
+        <Button
+            android:id="@+id/archivedButton"
+            android:layout_width="22sp"
+            android:layout_height="23sp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/ic_baseline_archive_24"
+            />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

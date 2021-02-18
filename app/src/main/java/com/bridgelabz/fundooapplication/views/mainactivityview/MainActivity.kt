@@ -91,10 +91,6 @@ class MainActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("TAG", "signInWithCredential:success")
-                   /* val intentToFacebookHome = Intent(this,
-                        FacebookHomePage::class.java)
-                    startActivity(intentToFacebookHome)*/
-
                     val intentToDashboard = Intent(this,HomeDashboardActivity::class.java)
                     startActivity(intentToDashboard)
 

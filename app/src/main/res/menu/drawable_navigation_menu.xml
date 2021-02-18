@@ -24,6 +24,13 @@
         />
 
     <item
+        android:id="@+id/archivedPage"
+        android:title="Archived"
+        android:checkable="true"
+        android:icon="@drawable/ic_baseline_archive_24"
+        />
+
+    <item
         android:title="Options">
         <menu>
             <item

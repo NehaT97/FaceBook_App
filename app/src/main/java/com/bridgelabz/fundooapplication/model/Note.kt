@@ -5,6 +5,7 @@ data class Note(
     val userId: String = " ",
     val title: String = " ",
     val description: String = " ",
-    var isDeleted: Boolean = false
+    var isDeleted: Boolean = false,
+    var isArchived:Boolean = false
 ) {
 }

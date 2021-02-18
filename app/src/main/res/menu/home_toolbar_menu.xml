@@ -8,11 +8,12 @@
         android:icon="@drawable/ic_baseline_search_24"
         android:title="search"
         app:showAsAction="ifRoom|collapseActionView"
-        app:actionViewClass="androidx.appcompat.widget.SearchView" />
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        />
 
     <item
         android:id="@+id/notesView"
-        android:icon="@drawable/ic_list_view"
+        android:icon="@drawable/ic_grid_view_24px"
         android:title="List View"
         app:showAsAction="ifRoom" />
 

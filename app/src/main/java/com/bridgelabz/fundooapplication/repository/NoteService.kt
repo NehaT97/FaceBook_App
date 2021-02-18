@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import java.util.stream.Collectors
 
 class NoteService : INoteService {
 
@@ -33,9 +34,32 @@ class NoteService : INoteService {
         return firebaseStore.collection("Notes").whereEqualTo("userId", userId).get()
     }
 
+    /*override fun getNoteList2(userId: String): MutableList<Note>? {
+        val snapShots = firebaseStore.collection("Notes").whereEqualTo("userId", userId).get().addOnCanceledListener {
+            if (i.isComplete) {
+                val documents = it.result!!.documents
+                return documents.stream().map {
+                    val dataMap = it.data
+                    val noteId = it.id
+                    val usersId = dataMap?.get("userId").toString()
+                    val title = dataMap?.get("title").toString()
+                    val description = dataMap?.get("description").toString()
+                    val isDeleted = dataMap?.get("isDeleted") as Boolean
+                    val isArchived = dataMap["isArchived"] as Boolean
+                    return@map Note(noteId, usersId, title, description, isDeleted, isArchived)
+                }.collect(Collectors.toList())
+            }
+        }
+        return ArrayList()
+    }*/
+
     override fun findNoteByNoteId(noteId: String): Task<QuerySnapshot> {
         return firebaseStore.collection("Notes").whereEqualTo("noteId", noteId).get()
     }
+
+   /* override fun getNoteList2(userId: String): MutableList<Note>? {
+        TODO("Not yet implemented")
+    }*/
 
     override fun update(documentId:String, notes: Note) {
         firebaseStore.collection("Notes").document(documentId).set(notes)

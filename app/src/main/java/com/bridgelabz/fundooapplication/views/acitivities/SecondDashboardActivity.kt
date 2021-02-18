@@ -64,7 +64,7 @@ class SecondDashboardActivity : AppCompatActivity() {
             val title = findViewById<EditText>(R.id.NoteTitle).text.toString()
             val description = findViewById<EditText>(R.id.NoteDescription).text.toString()
             val emailId = noteService.getUser()?.email
-            if (!emailId.isNullOrEmpty()) {
+            if (!emailId.isNullOrEmpty() && title.isNotEmpty()) {
                 val note = Note(UUID.randomUUID().toString(), emailId, title, description)
                 noteService.addNote(note)
             }

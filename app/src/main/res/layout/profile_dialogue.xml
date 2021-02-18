@@ -9,9 +9,9 @@
         android:id="@+id/userProfile"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="125sp"
+        android:layout_marginStart="125sp"
         android:layout_marginTop="30sp"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_userprofile" />
@@ -35,8 +35,8 @@
                 android:layout_below="@id/userProfile"
                 android:layout_marginLeft="50dp"
                 android:layout_marginTop="25dp"
-                android:text="User Name:"
-                android:textSize="20dp"
+                android:text="@string/user_name"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -78,12 +78,12 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/userProfile"
                 android:layout_centerInParent="true"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginRight="30dp"
+                android:layout_marginEnd="30dp"
                 android:layout_toRightOf="@id/emailIdHeading"
                 android:text="EmailId"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent" />
         </LinearLayout>
     </LinearLayout>
