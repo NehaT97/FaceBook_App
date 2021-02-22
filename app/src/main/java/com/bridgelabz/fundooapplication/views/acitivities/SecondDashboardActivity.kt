@@ -39,6 +39,7 @@ class SecondDashboardActivity : AppCompatActivity() {
             saveNote()
             val navigateBackToHomeDashboard = Intent(this, HomeDashboardActivity::class.java)
             startActivity(navigateBackToHomeDashboard)
+            finish()
         }
     }
 

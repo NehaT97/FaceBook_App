@@ -36,4 +36,6 @@
     <string name="drawer_open">DrawerOpen</string>
     <string name="drawer_close">DrawerClose</string>
     <string name="user_name">User Name:</string>
+    <string name="channel_name">REMINDER</string>
+    <string name="channel_description">Reminder Notifications</string>
 </resources>

@@ -149,6 +149,7 @@ class MainActivity : AppCompatActivity() {
                     /* If login Successful */
                     val intent = Intent(this@MainActivity, HomeDashboardActivity::class.java)
                     startActivity(intent)
+                   // finish()
 
                 } else {
                     Toast.makeText(

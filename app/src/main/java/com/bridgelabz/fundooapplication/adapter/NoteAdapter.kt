@@ -13,7 +13,7 @@ import com.bridgelabz.fundooapplication.R
 import com.bridgelabz.fundooapplication.model.Note
 
 
-class NoteAdapter(private var notes: ArrayList<Note>) : RecyclerView.Adapter<NoteViewHolder>(), Filterable {
+class NoteAdapter(private var notes: ArrayList<Note>, val isTrashPage: Boolean, val isArchived: Boolean) : RecyclerView.Adapter<NoteViewHolder>(), Filterable {
     private var mOnItemClickLister: OnItemClickListener? = null
     private var noteListTemp = ArrayList<Note>(notes)
 
@@ -50,7 +50,13 @@ class NoteAdapter(private var notes: ArrayList<Note>) : RecyclerView.Adapter<Not
             Log.i("FinallyItem", "Working")
             mOnItemClickLister?.onItemClicked(it, position)
         }
-
+        if (isTrashPage) {
+            holder.itemView.findViewById<Button>(R.id.deleteButton).setBackgroundResource(R.drawable.ic_baseline_restore_from_trash_24)
+            holder.itemView.findViewById<Button>(R.id.archivedButton).isEnabled = false
+        }
+        if (isArchived) {
+            holder.itemView.findViewById<Button>(R.id.archivedButton).setBackgroundResource(R.drawable.ic_baseline_unarchive_24)
+        }
         holder.itemView.findViewById<Button>(R.id.deleteButton).setOnClickListener {
             Log.i("Delete", "button clicked")
             mOnItemClickLister?.onDeleteButtonClicked(it, position)

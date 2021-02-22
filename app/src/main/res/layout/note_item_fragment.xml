@@ -35,19 +35,27 @@
 
         <Button
             android:id="@+id/deleteButton"
-            android:layout_width="25sp"
-            android:layout_height="25sp"
-            android:layout_alignParentRight="true"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/reminderButton"
             android:background="@drawable/ic_baseline_delete_outline_24"
             />
 
         <Button
             android:id="@+id/archivedButton"
-            android:layout_width="22sp"
-            android:layout_height="23sp"
+            android:layout_width="27dp"
+            android:layout_height="30dp"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
             android:background="@drawable/ic_baseline_archive_24"
             />
+
+        <Button
+            android:id="@+id/reminderButton"
+            android:layout_width="27dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/archivedButton"
+            android:background="@drawable/ic_baseline_edit_notifications_24" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

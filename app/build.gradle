@@ -10,8 +10,9 @@ android {
 
     defaultConfig {
         applicationId "com.bridgelabz.facebookapplication"
-        minSdkVersion 28
-        targetSdkVersion 29
+        //minSdkVersion 28
+        minSdkVersion 23
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
@@ -43,6 +44,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    //noinspection GradleCompatible
+    //implementation "com.android.support:support-compat:28.0.0"
     implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
