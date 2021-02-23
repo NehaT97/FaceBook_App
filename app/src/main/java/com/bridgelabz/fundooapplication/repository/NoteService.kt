@@ -57,10 +57,6 @@ class NoteService : INoteService {
         return firebaseStore.collection("Notes").whereEqualTo("noteId", noteId).get()
     }
 
-   /* override fun getNoteList2(userId: String): MutableList<Note>? {
-        TODO("Not yet implemented")
-    }*/
-
     override fun update(documentId:String, notes: Note) {
         firebaseStore.collection("Notes").document(documentId).set(notes)
     }

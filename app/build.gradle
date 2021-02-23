@@ -10,8 +10,8 @@ android {
 
     defaultConfig {
         applicationId "com.bridgelabz.facebookapplication"
-        //minSdkVersion 28
-        minSdkVersion 23
+        minSdkVersion 28
+       // minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"

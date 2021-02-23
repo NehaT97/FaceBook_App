@@ -15,7 +15,6 @@ class NoteViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     fun bind(note: Note) {
         description.text = note.description
         title.text = note.title
-
     }
 
 }

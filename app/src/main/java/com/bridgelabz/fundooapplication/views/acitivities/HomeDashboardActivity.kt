@@ -14,15 +14,11 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.cardview.widget.CardView
 import androidx.core.app.NotificationCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -33,6 +29,7 @@ import com.bridgelabz.fundooapplication.R.*
 import com.bridgelabz.fundooapplication.adapter.NoteAdapter
 import com.bridgelabz.fundooapplication.model.Note
 import com.bridgelabz.fundooapplication.repository.NoteService
+import com.bridgelabz.fundooapplication.repository.ReminderService
 import com.bridgelabz.fundooapplication.views.fragments.MainContainFragment
 import com.bridgelabz.fundooapplication.views.mainactivityview.MainActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -40,6 +37,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import java.io.InputStream
 import java.util.stream.Collectors
+import kotlin.collections.ArrayList
 
 
 class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListener,
@@ -330,6 +328,65 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         }
     }
 
+    override fun onNotificationButtonClicked(
+        view: View?,
+        pos: Int,
+        noteTitle: String,
+        noteDescription: String
+    ) {
+
+        selectReminderDateAndTimeDialog()
+        sendPushNotification(noteTitle,noteDescription)
+    }
+
+    private fun selectReminderDateAndTimeDialog() {
+        val reminderDialogue = Dialog(this)
+        reminderDialogue.setContentView(layout.reminder_dialogue)
+        reminderDialogue.show()
+        val btn_date = reminderDialogue.findViewById<Button>(R.id.btn_date)
+        val btn_time = reminderDialogue.findViewById<Button>(R.id.btn_time)
+        val in_date = reminderDialogue.findViewById<EditText>(R.id.in_date)
+        val in_time = reminderDialogue.findViewById<EditText>(R.id.in_time)
+        val reminderService:ReminderService = ReminderService()
+
+        btn_date.setOnClickListener {
+            Toast.makeText(this, "clicked on date button", Toast.LENGTH_SHORT).show()
+            reminderService.selectDate(this,in_date)
+        }
+
+        btn_time.setOnClickListener {
+            Toast.makeText(this, "clicked on time button", Toast.LENGTH_SHORT).show()
+            reminderService.selectTime(this,in_time)
+
+        }
+
+    }
+
+   /* private fun selectDate(inDate: EditText) {
+        val c: Calendar = Calendar.getInstance()
+        val mYear = c.get(Calendar.YEAR)
+        val mMonth = c.get(Calendar.MONTH)
+        val mDay = c.get(Calendar.DAY_OF_MONTH)
+
+
+        val datePickerDialog = DatePickerDialog(
+            this,
+            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                inDate.setText(dayOfMonth.toString() + "-" + (monthOfYear + 1) + "-" + year) }, mYear, mMonth, mDay
+        )
+        datePickerDialog.show()
+    }
+*/
+    private fun sendPushNotification(title:String, content:String) {
+        val builder = NotificationCompat.Builder(applicationContext, "REMINDER")
+            .setSmallIcon(drawable.ic_baseline_event_note_24)
+            .setContentTitle(title)
+            .setContentText(content)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .build()
+        notificationManager.notify(1, builder);
+    }
+
     override fun onArchivedButtonClicked(view: View?, pos: Int) {
         val note = notesList[pos]
         notesList.removeAt(pos)
@@ -351,17 +408,8 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         }
     }
 
-    private fun sendPushNotification(title:String, content:String) {
-        val builder = NotificationCompat.Builder(applicationContext, "REMINDER")
-            .setSmallIcon(drawable.ic_baseline_event_note_24)
-            .setContentTitle(title)
-            .setContentText(content)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .build()
-        notificationManager.notify(1, builder);
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+    override fun onNavigationItemSelected(item: MenuItem): Boolean
+    {
         when (item.itemId) {
             R.id.nav_logout -> {
                 auth.signOut()
