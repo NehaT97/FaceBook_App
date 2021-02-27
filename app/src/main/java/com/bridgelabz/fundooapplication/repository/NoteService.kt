@@ -1,6 +1,7 @@
 package com.bridgelabz.fundooapplication.repository
 
 import android.util.Log
+import android.widget.Toast
 import com.bridgelabz.fundooapplication.model.INoteService
 import com.bridgelabz.fundooapplication.model.Note
 import com.google.android.gms.tasks.Task
@@ -9,12 +10,14 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.messaging.FirebaseMessaging
 import java.util.stream.Collectors
 
 class NoteService : INoteService {
 
     private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firebaseStore: FirebaseFirestore = FirebaseFirestore.getInstance()
+
 
 
     override fun getUser(): FirebaseUser? {
@@ -57,6 +60,19 @@ class NoteService : INoteService {
         return firebaseStore.collection("Notes").whereEqualTo("noteId", noteId).get()
     }
 
+   /* override fun deviceToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+            if (it.isSuccessful){
+                val token = it.result
+                Log.i("Token Id","$token")
+                Toast.makeText(baseContext, "Token generated", Toast.LENGTH_SHORT).show()
+            }else{
+                Log.w("Fails", "Fetching FCM registration token failed", it.exception)
+
+            }
+        }
+    }
+*/
     override fun update(documentId:String, notes: Note) {
         firebaseStore.collection("Notes").document(documentId).set(notes)
     }

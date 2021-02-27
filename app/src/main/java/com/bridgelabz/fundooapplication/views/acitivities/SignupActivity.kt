@@ -23,6 +23,7 @@ class SignupActivity : AppCompatActivity() {
         setContentView(R.layout.activity_signup)
     }
 
+
     fun facebookRegistration(view: View) {
         firebaseAuth = FirebaseAuth.getInstance()
         val signUpButton = findViewById<Button>(R.id.register_button)

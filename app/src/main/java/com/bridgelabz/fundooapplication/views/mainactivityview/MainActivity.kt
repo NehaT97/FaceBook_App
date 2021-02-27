@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bridgelabz.fundooapplication.R
 import com.bridgelabz.fundooapplication.loadingAlertDialog.ProgressLoader
+import com.bridgelabz.fundooapplication.repository.NoteService
 import com.bridgelabz.fundooapplication.views.acitivities.HomeDashboardActivity
 import com.bridgelabz.fundooapplication.views.acitivities.SignupActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -24,6 +25,8 @@ import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,11 +34,27 @@ class MainActivity : AppCompatActivity() {
     private lateinit var googleSignInClient: GoogleSignInClient
     private val RC_SIGN_IN: Int = 123
     lateinit var signInByGoogleBtn: SignInButton
+    lateinit var noteService: NoteService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        retrieveFCMRegistrationToken()
         socialLogin()
+    }
+
+    private fun retrieveFCMRegistrationToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+            if (it.isSuccessful){
+                val token = it.result
+                Log.i("*****Token Generated*****","$token")
+                Toast.makeText(this,"Token Generated",Toast.LENGTH_LONG).show()
+
+            }else{
+                Log.w("Fails", "Fetching FCM registration token failed", it.exception)
+
+            }
+        }
     }
 
     private fun socialLogin() {

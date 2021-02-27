@@ -11,5 +11,4 @@ interface INoteService {
     fun getNoteList(userId: String): Task<QuerySnapshot>
     fun update(documentId:String, note: Note)
     fun findNoteByNoteId(noteId: String): Task<QuerySnapshot>
-   // fun getNoteList2(userId: String): MutableList<Note>?
 }

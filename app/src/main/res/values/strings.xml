@@ -37,5 +37,12 @@
     <string name="drawer_close">DrawerClose</string>
     <string name="user_name">User Name:</string>
     <string name="channel_name">REMINDER</string>
-    <string name="channel_description">Reminder Notifications</string>
+    <string name="channel_description">Note Reminder</string>
+    <string name="date_place_holder">%s-%s-%s</string>
+    <string name="select_date">SELECT DATE</string>
+    <string name="select_time">SELECT TIME</string>
+    <string name="dateFormat">DD - MM - YYYY</string>
+    <string name="timeFormat">H:MM</string>
+    <string name="cancelReminder">Cancel</string>
+    <string name="AddReminder">Add</string>
 </resources>

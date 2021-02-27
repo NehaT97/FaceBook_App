@@ -1,7 +1,6 @@
 package com.bridgelabz.fundooapplication.views.acitivities
 
 import android.app.*
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -19,7 +18,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.NotificationCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,7 +27,8 @@ import com.bridgelabz.fundooapplication.R.*
 import com.bridgelabz.fundooapplication.adapter.NoteAdapter
 import com.bridgelabz.fundooapplication.model.Note
 import com.bridgelabz.fundooapplication.repository.NoteService
-import com.bridgelabz.fundooapplication.repository.ReminderService
+import com.bridgelabz.fundooapplication.reminderSettings.view.notification.NotificationHelper
+import com.bridgelabz.fundooapplication.reminderSettings.view.reminder.ReminderHelper
 import com.bridgelabz.fundooapplication.views.fragments.MainContainFragment
 import com.bridgelabz.fundooapplication.views.mainactivityview.MainActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -45,7 +44,7 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
 
     lateinit var mDrawerLayout: DrawerLayout
     lateinit var mDrawerToggle: ActionBarDrawerToggle
-    lateinit var notificationManager: NotificationManager
+    lateinit var notificationHelper: NotificationHelper
     private val noteService: NoteService = NoteService()
     private var notesList: ArrayList<Note> = ArrayList()
     //private val noteAdapter: NoteAdapter = NoteAdapter(notesList)
@@ -77,7 +76,10 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         checkUserIsLoggedIn()
         recyclerViewToDisplayNotesInList()
         auth = FirebaseAuth.getInstance()
-        createNotificationChannel()
+        notificationHelper =
+            NotificationHelper(
+                this
+            )
 
     }
 
@@ -315,76 +317,62 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         }
     }
 
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = getString(R.string.channel_name)
-            val descriptionText = getString(R.string.channel_description)
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel("REMINDER", name, importance).apply {
-                description = descriptionText
-            }
-            notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
-    }
-
     override fun onNotificationButtonClicked(
         view: View?,
         pos: Int,
         noteTitle: String,
         noteDescription: String
-    ) {
-
-        selectReminderDateAndTimeDialog()
-        sendPushNotification(noteTitle,noteDescription)
+    ){
+        selectReminderDateAndTimeDialog(noteTitle,noteDescription)
     }
 
-    private fun selectReminderDateAndTimeDialog() {
+    private fun selectReminderDateAndTimeDialog(noteTitle: String, noteDescription: String) {
         val reminderDialogue = Dialog(this)
-        reminderDialogue.setContentView(layout.reminder_dialogue)
+        reminderDialogue.setContentView(layout.reminder_dialogue1)
         reminderDialogue.show()
-        val btn_date = reminderDialogue.findViewById<Button>(R.id.btn_date)
-        val btn_time = reminderDialogue.findViewById<Button>(R.id.btn_time)
-        val in_date = reminderDialogue.findViewById<EditText>(R.id.in_date)
-        val in_time = reminderDialogue.findViewById<EditText>(R.id.in_time)
-        val reminderService:ReminderService = ReminderService()
+        val btnDate = reminderDialogue.findViewById<Button>(R.id.btn_date)
+        val btnTime = reminderDialogue.findViewById<Button>(R.id.btn_time)
+        val inDate = reminderDialogue.findViewById<EditText>(R.id.in_date)
+        val inTime = reminderDialogue.findViewById<EditText>(R.id.in_time)
+        val cancelButton = reminderDialogue.findViewById<Button>(R.id.cancelButton)
+        val addButton = reminderDialogue.findViewById<Button>(R.id.saveButton)
+        val reminderHelper: ReminderHelper =
+            ReminderHelper()
 
-        btn_date.setOnClickListener {
-            Toast.makeText(this, "clicked on date button", Toast.LENGTH_SHORT).show()
-            reminderService.selectDate(this,in_date)
+        btnDate.setOnClickListener {
+            Toast.makeText(this, "Select Date", Toast.LENGTH_SHORT).show()
+            reminderHelper.selectDate(this,inDate)
         }
 
-        btn_time.setOnClickListener {
-            Toast.makeText(this, "clicked on time button", Toast.LENGTH_SHORT).show()
-            reminderService.selectTime(this,in_time)
+        btnTime.setOnClickListener {
+            Toast.makeText(this, "Select Time", Toast.LENGTH_SHORT).show()
+            reminderHelper.selectTime(this,inTime)
 
         }
 
-    }
+        addButton.setOnClickListener {
+            Toast.makeText(this, "Reminder Is set", Toast.LENGTH_SHORT).show()
+            val dateString = reminderDialogue.findViewById<EditText>(R.id.in_date).text.toString()
+            val timeString = reminderDialogue.findViewById<EditText>(R.id.in_time).text.toString()
+            if (dateString.isNullOrEmpty()) {
+                Toast.makeText(this, "Please select date", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
-   /* private fun selectDate(inDate: EditText) {
-        val c: Calendar = Calendar.getInstance()
-        val mYear = c.get(Calendar.YEAR)
-        val mMonth = c.get(Calendar.MONTH)
-        val mDay = c.get(Calendar.DAY_OF_MONTH)
+            if (timeString.isNullOrEmpty()) {
+                Toast.makeText(this, "Please select time", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
+            reminderHelper.setAlarm(this, dateString.trim(), timeString,noteTitle,noteDescription)
+            reminderDialogue.dismiss()
+        }
 
-        val datePickerDialog = DatePickerDialog(
-            this,
-            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-                inDate.setText(dayOfMonth.toString() + "-" + (monthOfYear + 1) + "-" + year) }, mYear, mMonth, mDay
-        )
-        datePickerDialog.show()
-    }
-*/
-    private fun sendPushNotification(title:String, content:String) {
-        val builder = NotificationCompat.Builder(applicationContext, "REMINDER")
-            .setSmallIcon(drawable.ic_baseline_event_note_24)
-            .setContentTitle(title)
-            .setContentText(content)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .build()
-        notificationManager.notify(1, builder);
+        cancelButton.setOnClickListener {
+            Toast.makeText(this, "Reminder Not Saved", Toast.LENGTH_SHORT).show()
+            reminderDialogue.dismiss()
+        }
+
     }
 
     override fun onArchivedButtonClicked(view: View?, pos: Int) {

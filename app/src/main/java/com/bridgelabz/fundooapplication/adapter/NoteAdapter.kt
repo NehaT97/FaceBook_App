@@ -38,7 +38,29 @@ class NoteAdapter(private var notes: ArrayList<Note>, val isTrashPage: Boolean, 
         val displayView = LayoutInflater.from(parent.context)
             .inflate(R.layout.note_item_fragment, parent, false)
         Log.i("ON_Create_ViewHolder", "calling ->{$displayView}")
-        return NoteViewHolder(displayView)
+        val viewHolder =  NoteViewHolder(displayView)
+
+        displayView.findViewById<Button>(R.id.deleteButton).setOnClickListener {
+            Log.i("Delete", "button clicked")
+            mOnItemClickLister?.onDeleteButtonClicked(it,viewHolder.adapterPosition)
+        }
+
+        displayView.findViewById<Button>(R.id.archivedButton).setOnClickListener {
+            Log.i("Archived","button Clicked")
+            mOnItemClickLister?.onArchivedButtonClicked(it,viewHolder.adapterPosition)
+        }
+
+        displayView.findViewById<Button>(R.id.reminderButton).setOnClickListener {
+            Log.i("reminder","button Clicked")
+            val note = notes[viewHolder.adapterPosition]
+            val noteTitle= note.title
+            val noteDescription = note.description
+            Log.i("CHECK_TITLE","${noteTitle}")
+            Log.i("CHECK_Description","${noteDescription}")
+            mOnItemClickLister?.onNotificationButtonClicked(it,viewHolder.adapterPosition,noteTitle,noteDescription)
+        }
+
+        return viewHolder
     }
 
     override fun getItemCount(): Int {
@@ -60,25 +82,6 @@ class NoteAdapter(private var notes: ArrayList<Note>, val isTrashPage: Boolean, 
         }
         if (isArchived) {
             holder.itemView.findViewById<Button>(R.id.archivedButton).setBackgroundResource(R.drawable.ic_baseline_unarchive_24)
-        }
-
-        holder.itemView.findViewById<Button>(R.id.deleteButton).setOnClickListener {
-            Log.i("Delete", "button clicked")
-            mOnItemClickLister?.onDeleteButtonClicked(it, position)
-        }
-
-        holder.itemView.findViewById<Button>(R.id.archivedButton).setOnClickListener {
-            Log.i("Archived","button Clicked")
-            mOnItemClickLister?.onArchivedButtonClicked(it,position)
-        }
-
-        holder.itemView.findViewById<Button>(R.id.reminderButton).setOnClickListener {
-            Log.i("reminder","button Clicked")
-            val noteTitle= note.title
-            val noteDescription = note.description
-            Log.i("CHECK_TITLE","${noteTitle}")
-            Log.i("CHECK_Description","${noteDescription}")
-            mOnItemClickLister?.onNotificationButtonClicked(it,position,noteTitle,noteDescription)
         }
 
     }
@@ -105,8 +108,6 @@ class NoteAdapter(private var notes: ArrayList<Note>, val isTrashPage: Boolean, 
             }
 
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-               // notes.clear()
-              //  notes.addAll(results?.values as Collection<Note>)
                 notes = results?.values as ArrayList<Note>
                 Log.i("noteList", "$notes")
                 notifyDataSetChanged()

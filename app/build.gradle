@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId "com.bridgelabz.facebookapplication"
         minSdkVersion 28
-       // minSdkVersion 23
+       //minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -36,6 +36,7 @@ android {
 
 dependencies {
 
+    implementation 'com.google.firebase:firebase-messaging:21.0.1'
     def lifecycle_version = "2.2.0"
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
