@@ -164,6 +164,13 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         return super.onPrepareOptionsMenu(menu)
     }
 
+
+
+
+
+
+
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val menuInflater: MenuInflater = menuInflater
         menuInflater.inflate(R.menu.home_toolbar_menu, menu)
