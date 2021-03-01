@@ -37,6 +37,11 @@ class NoteService : INoteService {
         return firebaseStore.collection("Notes").whereEqualTo("userId", userId).get()
     }
 
+    override fun getLimitedNoteList(userId: String): Task<QuerySnapshot> {
+        return firebaseStore.collection("Notes").whereEqualTo("userId",userId).limit(10).get()
+    }
+
+
     /*override fun getNoteList2(userId: String): MutableList<Note>? {
         val snapShots = firebaseStore.collection("Notes").whereEqualTo("userId", userId).get().addOnCanceledListener {
             if (i.isComplete) {
