@@ -36,6 +36,7 @@ import com.bridgelabz.fundooapplication.views.mainactivityview.MainActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import java.io.InputStream
 import java.util.*
 import java.util.stream.Collectors
@@ -64,6 +65,7 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
     private val TAKE_PHOTO = "Take Photo";
     private val CHOOSE_FROM_GALARY = "Choose from Gallery";
     private val CANCEL = "Cancel";
+    private lateinit var notesDocumentSnapshots: List<DocumentSnapshot>
 
     private var isLoading: Boolean = false
     private var isLastPage: Boolean = false
@@ -86,7 +88,6 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         addActionBarDrawerToggle(navigationView)
         configurePage(navigationView)
-
         navigateToSecondDashboard()
         recyclerViewToDisplayNotesInList()
         auth = FirebaseAuth.getInstance()
@@ -94,7 +95,6 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
             NotificationHelper(
                 this
             )
-
     }
 
     private fun configurePage(navigationView: NavigationView) {
@@ -118,42 +118,19 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         val recyclerView = findViewById<RecyclerView>(id.fragmentRecycle)
         recyclerView.layoutManager = LinearLayoutManager(this)
         noteAdapter.setOnItemClickListener(this)
-       // loadNotesData(true, 1,10)
+        loadNotesData(true, 1, 5)
+        noteAdapter.updateList(notesList)
         recyclerView.adapter = noteAdapter
-
-/*        recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val visibleItemCount: Int = layoutManager.childCount
-                Log.i("visibleItemCount", "$visibleItemCount")
-                val totalItemCount: Int = layoutManager.itemCount
-                Log.i("totalItemCount", "$totalItemCount")
-                val firstVisibleItemPosition: Int = layoutManager.findFirstVisibleItemPosition()
-                Log.i("firstVisibleItemPosition", "$firstVisibleItemPosition")
-                if (visibleItemCount != null) {
-                    if (totalItemCount <= totaNotesCount) {
-                        findViewById<View>(R.id.recyclerViewLoader).visibility = View.VISIBLE
-                        val pageSize:Int= 5
-                        val pageNo = (totalItemCount/pageSize) + 1
-                        Log.i("Pageno", "$pageNo")
-                        Timer("Fetch Notes", false).schedule(10000) {
-                            loadNotesData(false, pageNo, pageSize)
-                        }
-                    }
-                }
-                findViewById<View>(R.id.recyclerViewLoader).visibility = View.GONE
-            }
-        })*/
 
         recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener(){
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 Log.i("Scroll","onScrollStateChanged: Called")
-
-                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+                if (!recyclerView.canScrollVertically(1)){
                     isScrolling = true
-                    Log.i("Scroll","onScrollStateChanged: You are scrolling")
+                    Timer("Fetch Notes", false).schedule(3000) {
+                        loadNotesData(false, 2, 5)
+                    }
                 }
             }
 
@@ -169,14 +146,9 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
                 Log.i("Scroll","scrollOutItems: $scrollOutItems")
 
                 if (isScrolling && (visibleItems + scrollOutItems == totalItems)){
-                    //data fetch
                     isScrolling = false
-                    //loadNotesData1()
-                    val pageSize:Int= 5
-                    val pageNo = (totalItems/pageSize) + 1
-                    Log.i("Pageno", "$pageNo")
                     Timer("Fetch Notes", false).schedule(10000) {
-                        loadNotesData1(false, pageNo, pageSize)
+                        loadNotesData(false, 3, 5)
                     }
                 }
             }
@@ -190,47 +162,39 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         recyclerView.adapter = noteAdapter
     }
 
-    private fun loadNotesData1(b: Boolean, pageNo: Int, pageSize: Int) {
+    private fun loadNotesData(isInitLoad:Boolean, pageNo:Long, pageSize: Long) {
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
-        progressBar.visibility = View.VISIBLE
+        //progressBar.visibility = View.VISIBLE
         val user = noteService.getUser()
         val userEmail = user?.email
         val showDeletedNotes = intent.getBooleanExtra("isTrashPage", false)
         val showArchivedNotes = intent.getBooleanExtra("isArchivedPage", false)
-        var tempList = ArrayList<Note>()
+        var lastVisibleSnapshot : DocumentSnapshot? = null
+        if (!isInitLoad && notesDocumentSnapshots.isNullOrEmpty()) {
+            lastVisibleSnapshot = notesDocumentSnapshots[notesDocumentSnapshots.size - 1]
+        }
         if (userEmail != null) {
-            noteService.getNoteList(userEmail).addOnCompleteListener {
+            val startIndex = (pageNo - 1) * pageSize
+            noteService.getLimitedNoteList(userEmail, showDeletedNotes, showArchivedNotes, lastVisibleSnapshot, pageSize).addOnCompleteListener {
                 if (it.isSuccessful) {
+                    Log.i("PAGE Details", "$pageNo $pageSize")
+                    Log.i("Notes", "${ArrayList(it.result!!.toObjects(Note::class.java)).stream().map(Note::title).collect(Collectors.toList())}")
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        notesList = ArrayList(it.result!!.toObjects(Note::class.java))
-                            .stream()
-                            .filter { note: Note -> showDeletedNotes.equals(note.isDeleted)   }
-                            .filter { note: Note  -> showArchivedNotes.equals(note.isArchived)}
-                            .collect(Collectors.toList()) as ArrayList<Note>
-                        totalNotesCount = tempList.size
-                    }
-
-                    if (b) {
-                        notesList = tempList.subList(pageNo, pageSize).toList() as ArrayList<Note>
-                    } else {
-                        val startIndex = (pageNo - 1) * pageSize
-                        var endIndex = (pageNo) * pageSize
-                        if (endIndex > tempList.size) {
-                            endIndex = tempList.size
+                        notesDocumentSnapshots = it.result!!.documents
+                        if (isInitLoad) {
+                            notesList = ArrayList(it.result!!.toObjects(Note::class.java))
+                        } else {
+                            notesList.addAll(ArrayList(it.result!!.toObjects(Note::class.java)))
                         }
-                        notesList.addAll(tempList.subList(startIndex, endIndex).toList() as ArrayList<Note>)
                     }
                     noteAdapter.updateList(notesList)
                     noteAdapter.notifyDataSetChanged()
-                    progressBar.visibility = View.GONE
                 }
             }
-            //  Log.i("Notes", noteService.getNoteList2(userEmail).toString())
         }
+        progressBar.visibility = View.GONE
     }
 
-
-    // isInitLoad: Boolean, pageNo: Int, pageSize: Int)
    /* private fun loadNotesData( ){
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
        progressBar.visibility = View.VISIBLE
