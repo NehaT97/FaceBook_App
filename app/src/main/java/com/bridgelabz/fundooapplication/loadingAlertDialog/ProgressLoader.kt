@@ -12,7 +12,7 @@ class ProgressLoader(private val activity: Activity) {
     fun startLoadingDialog() {
         val builder = AlertDialog.Builder(activity)
         var inflater: LayoutInflater = activity.layoutInflater
-        builder.setView(inflater.inflate(R.layout.custom_dialog, null))
+        builder.setView(inflater.inflate(R.layout.custom_dialog_loader, null))
         builder.setCancelable(true)
 
         dialog = builder.create()

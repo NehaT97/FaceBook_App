@@ -1,24 +1,17 @@
 package com.bridgelabz.fundooapplication.repository
 
 import android.util.Log
-import android.widget.Toast
 import com.bridgelabz.fundooapplication.model.INoteService
 import com.bridgelabz.fundooapplication.model.Note
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.messaging.FirebaseMessaging
-import java.util.stream.Collectors
+import com.google.firebase.firestore.*
 
 class NoteService : INoteService {
 
     private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firebaseStore: FirebaseFirestore = FirebaseFirestore.getInstance()
-
-
 
     override fun getUser(): FirebaseUser? {
         return firebaseAuth.currentUser
@@ -37,42 +30,35 @@ class NoteService : INoteService {
         return firebaseStore.collection("Notes").whereEqualTo("userId", userId).get()
     }
 
-    /*override fun getNoteList2(userId: String): MutableList<Note>? {
-        val snapShots = firebaseStore.collection("Notes").whereEqualTo("userId", userId).get().addOnCanceledListener {
-            if (i.isComplete) {
-                val documents = it.result!!.documents
-                return documents.stream().map {
-                    val dataMap = it.data
-                    val noteId = it.id
-                    val usersId = dataMap?.get("userId").toString()
-                    val title = dataMap?.get("title").toString()
-                    val description = dataMap?.get("description").toString()
-                    val isDeleted = dataMap?.get("isDeleted") as Boolean
-                    val isArchived = dataMap["isArchived"] as Boolean
-                    return@map Note(noteId, usersId, title, description, isDeleted, isArchived)
-                }.collect(Collectors.toList())
-            }
+    override fun getLimitedNoteList(userId: String, isDeleted: Boolean, isArchived: Boolean, lastVisibleSnapshot: DocumentSnapshot?, pageSize: Long,lastCreationTimeStamp:Long): Task<QuerySnapshot> {
+        Log.i("lastSnapshot","$lastVisibleSnapshot")
+        if (lastVisibleSnapshot == null) {
+            return firebaseStore.collection("Notes").whereEqualTo("userId",userId)
+                .whereEqualTo("deleted", isDeleted)
+                .whereEqualTo("archived", isArchived)
+                .orderBy("createdAt")
+                .limit(pageSize).get()
         }
-        return ArrayList()
-    }*/
+        return firebaseStore.collection("Notes").whereEqualTo("userId",userId)
+            .whereEqualTo("deleted", isDeleted)
+            .whereEqualTo("archived", isArchived)
+            .orderBy("createdAt")
+            .startAfter(lastCreationTimeStamp)
+            .limit(pageSize).get()
+    }
 
+    override fun getLimitedNoteList1(userId: String, isDeleted: Boolean, isArchived: Boolean, limit: Long, lastCreationTimestamp : Long): Task<QuerySnapshot> {
+        return firebaseStore.collection("Notes").whereEqualTo("userId",userId)
+            .whereEqualTo("deleted", isDeleted)
+            .whereEqualTo("archived", isArchived)
+            .orderBy("createdAt")
+            .startAfter(lastCreationTimestamp)
+            .limit(limit).get()
+    }
     override fun findNoteByNoteId(noteId: String): Task<QuerySnapshot> {
         return firebaseStore.collection("Notes").whereEqualTo("noteId", noteId).get()
     }
 
-   /* override fun deviceToken() {
-        FirebaseMessaging.getInstance().token.addOnCompleteListener {
-            if (it.isSuccessful){
-                val token = it.result
-                Log.i("Token Id","$token")
-                Toast.makeText(baseContext, "Token generated", Toast.LENGTH_SHORT).show()
-            }else{
-                Log.w("Fails", "Fetching FCM registration token failed", it.exception)
-
-            }
-        }
-    }
-*/
     override fun update(documentId:String, notes: Note) {
         firebaseStore.collection("Notes").document(documentId).set(notes)
     }

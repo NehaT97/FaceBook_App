@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
@@ -36,13 +37,22 @@ import com.bridgelabz.fundooapplication.views.mainactivityview.MainActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import java.io.InputStream
+import java.util.*
 import java.util.stream.Collectors
+<<<<<<< HEAD
+=======
+import kotlin.collections.ArrayList
+import kotlin.concurrent.schedule
+import kotlin.properties.Delegates
+>>>>>>> Development
 
 
 class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListener,
     NavigationView.OnNavigationItemSelectedListener {
 
+    private lateinit var progressBar: ProgressBar
     lateinit var mDrawerLayout: DrawerLayout
     lateinit var mDrawerToggle: ActionBarDrawerToggle
     lateinit var notificationHelper: NotificationHelper
@@ -58,6 +68,17 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
     private val TAKE_PHOTO = "Take Photo";
     private val CHOOSE_FROM_GALARY = "Choose from Gallery";
     private val CANCEL = "Cancel";
+    private lateinit var notesDocumentSnapshots: List<DocumentSnapshot>
+
+    private var isLoading: Boolean = false
+    private var isLastPage: Boolean = false
+    private var totalNotesCount: Int = 0
+
+    private var isScrolling:Boolean = false
+    private var visibleItems by Delegates.notNull<Int>()
+    private var totalItems by Delegates.notNull<Int>()
+    private var scrollOutItems by Delegates.notNull<Int>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,10 +91,16 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         addActionBarDrawerToggle(navigationView)
         configurePage(navigationView)
         navigateToSecondDashboard()
-        checkUserIsLoggedIn()
         recyclerViewToDisplayNotesInList()
         auth = FirebaseAuth.getInstance()
+<<<<<<< HEAD
         notificationHelper = NotificationHelper(this)
+=======
+        notificationHelper =
+            NotificationHelper(
+                this
+            )
+>>>>>>> Development
     }
 
     private fun configurePage(navigationView: NavigationView) {
@@ -97,7 +124,42 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         val recyclerView = findViewById<RecyclerView>(id.fragmentRecycle)
         recyclerView.layoutManager = LinearLayoutManager(this)
         noteAdapter.setOnItemClickListener(this)
+        loadNotesData(true, 1, 9)
+        noteAdapter.updateList(notesList)
         recyclerView.adapter = noteAdapter
+
+        recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener(){
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                Log.i("Scroll","onScrollStateChanged: Called")
+                if (!recyclerView.canScrollVertically(1)){
+                    fetchData()
+                }
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                Log.i("Scroll","onScrolled: Called")
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                visibleItems = layoutManager.childCount
+                Log.i("Scroll","visibleItems: $visibleItems")
+                totalItems = layoutManager.itemCount
+                Log.i("Scroll","totalItems: $totalItems")
+                scrollOutItems = layoutManager.findFirstVisibleItemPosition()
+                Log.i("Scroll","scrollOutItems: $scrollOutItems")
+
+            }
+        })
+    }
+
+    private fun fetchData() {
+        val handler:Handler = Handler()
+         progressBar = findViewById<ProgressBar>(R.id.progressBar1)
+        progressBar.visibility = View.VISIBLE
+        handler.postDelayed({
+            loadNotesData(false, 2, 9)
+            progressBar.visibility = View.GONE
+        },3000)
     }
 
     private fun recyclerViewToDisplayNotesInGrid() {
@@ -107,31 +169,49 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         recyclerView.adapter = noteAdapter
     }
 
-    private fun checkUserIsLoggedIn() {
-        if (noteService.getUser() != null)
-            loadNotesData()
-    }
-
-    private fun loadNotesData() {
+    private fun loadNotesData(isInitLoad:Boolean, pageNo:Long, pageSize: Long) {
         val user = noteService.getUser()
         val userEmail = user?.email
         val showDeletedNotes = intent.getBooleanExtra("isTrashPage", false)
         val showArchivedNotes = intent.getBooleanExtra("isArchivedPage", false)
+        val lastCreationTimeStamp:Long = if(notesList.isEmpty()) 0
+                                         else notesList.get(notesList.size -1).createdAt
+        var lastVisibleSnapshot : DocumentSnapshot? = null
+        if (!isInitLoad && notesDocumentSnapshots.isNullOrEmpty()) {
+            lastVisibleSnapshot = notesDocumentSnapshots[notesDocumentSnapshots.size - 1]
+            Log.i("lastVisibleSnapshot1","$lastVisibleSnapshot")
+        }
         if (userEmail != null) {
-            noteService.getNoteList(userEmail).addOnCompleteListener {
+            noteService.getLimitedNoteList1(userEmail, showDeletedNotes, showArchivedNotes, pageSize,lastCreationTimeStamp).addOnCompleteListener {
+                Log.i("lastVisibleSnapshot2","$lastVisibleSnapshot")
                 if (it.isSuccessful) {
+                    Log.i("PAGE Details", "$pageNo $pageSize")
+                    Log.i("Notes", "${ArrayList(it.result!!.toObjects(Note::class.java)).stream().map(Note::createdAt).collect(Collectors.toList())}")
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+<<<<<<< HEAD
                         notesList = ArrayList(it.result!!.toObjects(Note::class.java))
                             .stream()
                             .filter { note: Note -> showDeletedNotes.equals(note.isDeleted) }
                             .filter { note: Note -> showArchivedNotes.equals(note.isArchived) }
                             .collect(Collectors.toList()) as ArrayList<Note>
+=======
+                        notesDocumentSnapshots = it.result!!.documents
+                        Log.i("Documents Snapshot","$notesDocumentSnapshots")
+                        if (isInitLoad) {
+                            notesList = ArrayList(it.result!!.toObjects(Note::class.java))
+                        } else {
+                            notesList.addAll(ArrayList(it.result!!.toObjects(Note::class.java)))
+                        }
+>>>>>>> Development
                     }
                     noteAdapter.updateList(notesList)
                     noteAdapter.notifyDataSetChanged()
                 }
             }
+<<<<<<< HEAD
             //  Log.i("Notes", noteService.getNoteList2(userEmail).toString())
+=======
+>>>>>>> Development
         }
     }
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {

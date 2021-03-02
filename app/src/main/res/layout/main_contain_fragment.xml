@@ -42,7 +42,7 @@
 
 
     <fragment
-        android:id="@+id/fragmentRecycle"
+        android:id="@+id/fragmentRecycleView"
         android:name="com.bridgelabz.fundooapplication.views.fragments.RecyclerViewFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
