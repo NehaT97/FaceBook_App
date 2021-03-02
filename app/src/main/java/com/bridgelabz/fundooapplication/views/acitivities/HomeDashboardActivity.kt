@@ -1,6 +1,8 @@
 package com.bridgelabz.fundooapplication.views.acitivities
 
-import android.app.*
+import android.app.Activity
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -26,9 +28,9 @@ import com.bridgelabz.fundooapplication.R
 import com.bridgelabz.fundooapplication.R.*
 import com.bridgelabz.fundooapplication.adapter.NoteAdapter
 import com.bridgelabz.fundooapplication.model.Note
-import com.bridgelabz.fundooapplication.repository.NoteService
 import com.bridgelabz.fundooapplication.reminderSettings.view.notification.NotificationHelper
 import com.bridgelabz.fundooapplication.reminderSettings.view.reminder.ReminderHelper
+import com.bridgelabz.fundooapplication.repository.NoteService
 import com.bridgelabz.fundooapplication.views.fragments.MainContainFragment
 import com.bridgelabz.fundooapplication.views.mainactivityview.MainActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -36,7 +38,6 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import java.io.InputStream
 import java.util.stream.Collectors
-import kotlin.collections.ArrayList
 
 
 class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListener,
@@ -47,12 +48,10 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
     lateinit var notificationHelper: NotificationHelper
     private val noteService: NoteService = NoteService()
     private var notesList: ArrayList<Note> = ArrayList()
-    //private val noteAdapter: NoteAdapter = NoteAdapter(notesList)
     private lateinit var noteAdapter: NoteAdapter
-    private var mainContainFragment: MainContainFragment = MainContainFragment()
     private var isListView: Boolean = true
     private lateinit var auth: FirebaseAuth
-    private lateinit var profileDialogue : Dialog
+    private lateinit var profileDialogue: Dialog
     private lateinit var userProfile: ImageView
     private val OPEN_CAMERA = 0
     private val OPEN_GALARY = 1
@@ -66,21 +65,15 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
 
         val isTrashPage = intent.getBooleanExtra("isTrashPage", false)
         val isArchivedPage = intent.getBooleanExtra("isArchivedPage", false)
-
         noteAdapter = NoteAdapter(notesList, isTrashPage, isArchivedPage)
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         addActionBarDrawerToggle(navigationView)
         configurePage(navigationView)
-
         navigateToSecondDashboard()
         checkUserIsLoggedIn()
         recyclerViewToDisplayNotesInList()
         auth = FirebaseAuth.getInstance()
-        notificationHelper =
-            NotificationHelper(
-                this
-            )
-
+        notificationHelper = NotificationHelper(this)
     }
 
     private fun configurePage(navigationView: NavigationView) {
@@ -130,18 +123,17 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         notesList = ArrayList(it.result!!.toObjects(Note::class.java))
                             .stream()
-                            .filter { note: Note -> showDeletedNotes.equals(note.isDeleted)   }
-                            .filter { note: Note  -> showArchivedNotes.equals(note.isArchived)}
+                            .filter { note: Note -> showDeletedNotes.equals(note.isDeleted) }
+                            .filter { note: Note -> showArchivedNotes.equals(note.isArchived) }
                             .collect(Collectors.toList()) as ArrayList<Note>
                     }
                     noteAdapter.updateList(notesList)
                     noteAdapter.notifyDataSetChanged()
                 }
             }
-          //  Log.i("Notes", noteService.getNoteList2(userEmail).toString())
+            //  Log.i("Notes", noteService.getNoteList2(userEmail).toString())
         }
     }
-
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         val searchItem = menu?.findItem(R.id.search)
         val searchView = searchItem?.actionView as SearchView
@@ -165,32 +157,25 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
     }
 
 
-
-
-
-
-
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val menuInflater: MenuInflater = menuInflater
         menuInflater.inflate(R.menu.home_toolbar_menu, menu)
         return true
     }
-
     @Override
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.notesView -> {
-                    Toast.makeText(this, "Switched view", Toast.LENGTH_LONG).show()
-                    isListView = if (isListView) {
-                        recyclerViewToDisplayNotesInGrid()
-                        item.setIcon(R.drawable.ic_list_view)
-                        false
-                    } else {
-                        recyclerViewToDisplayNotesInList()
-                        item.setIcon(R.drawable.ic_grid_view_24px)
-                        true
-                    }
+                Toast.makeText(this, "Switched view", Toast.LENGTH_LONG).show()
+                isListView = if (isListView) {
+                    recyclerViewToDisplayNotesInGrid()
+                    item.setIcon(R.drawable.ic_list_view)
+                    false
+                } else {
+                    recyclerViewToDisplayNotesInList()
+                    item.setIcon(R.drawable.ic_grid_view_24px)
+                    true
+                }
             }
             R.id.search -> {
                 Toast.makeText(this, "Searching", Toast.LENGTH_LONG).show()
@@ -225,7 +210,7 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         builder.setTitle("ADD PROFILE PICTURE")
         builder.setItems(options) { dialog, item ->
             when {
-                 TAKE_PHOTO == options[item] -> {
+                TAKE_PHOTO == options[item] -> {
                     val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                     startActivityForResult(takePicture, OPEN_CAMERA)
                 }
@@ -243,22 +228,22 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-         super.onActivityResult(requestCode, resultCode, data)
-         if (resultCode != Activity.RESULT_CANCELED) {
-             when (requestCode) {
-                     OPEN_CAMERA -> if (resultCode == Activity.RESULT_OK && data != null) {
-                         val selectedImage: Bitmap? = data.extras!!["data"] as Bitmap?
-                         userProfile.setImageBitmap(selectedImage)
-                     }
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode != Activity.RESULT_CANCELED) {
+            when (requestCode) {
+                OPEN_CAMERA -> if (resultCode == Activity.RESULT_OK && data != null) {
+                    val selectedImage: Bitmap? = data.extras!!["data"] as Bitmap?
+                    userProfile.setImageBitmap(selectedImage)
+                }
 
-                     OPEN_GALARY -> if (resultCode == Activity.RESULT_OK && data != null) {
-                         val inputStream: InputStream? = contentResolver.openInputStream(data.data!!)
-                         val bitmap:Bitmap = BitmapFactory.decodeStream(inputStream)
-                         userProfile.setImageBitmap(bitmap)
+                OPEN_GALARY -> if (resultCode == Activity.RESULT_OK && data != null) {
+                    val inputStream: InputStream? = contentResolver.openInputStream(data.data!!)
+                    val bitmap: Bitmap = BitmapFactory.decodeStream(inputStream)
+                    userProfile.setImageBitmap(bitmap)
 
-                     }
-             }
-         }
+                }
+            }
+        }
     }
 
     private fun navigateToSecondDashboard() {
@@ -299,6 +284,8 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         intent.putExtra("title", note.title)
         intent.putExtra("userId", note.userId)
         intent.putExtra("noteId", note.noteId)
+       // intent.putExtra("createdAt",note.createdAt)
+        intent.putExtra("createdAt",note.createdAt)
         startActivity(intent)
     }
 
@@ -329,8 +316,8 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         pos: Int,
         noteTitle: String,
         noteDescription: String
-    ){
-        selectReminderDateAndTimeDialog(noteTitle,noteDescription)
+    ) {
+        selectReminderDateAndTimeDialog(noteTitle, noteDescription)
     }
 
     private fun selectReminderDateAndTimeDialog(noteTitle: String, noteDescription: String) {
@@ -348,12 +335,12 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
 
         btnDate.setOnClickListener {
             Toast.makeText(this, "Select Date", Toast.LENGTH_SHORT).show()
-            reminderHelper.selectDate(this,inDate)
+            reminderHelper.selectDate(this, inDate)
         }
 
         btnTime.setOnClickListener {
             Toast.makeText(this, "Select Time", Toast.LENGTH_SHORT).show()
-            reminderHelper.selectTime(this,inTime)
+            reminderHelper.selectTime(this, inTime)
 
         }
 
@@ -371,7 +358,7 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
                 return@setOnClickListener
             }
 
-            reminderHelper.setAlarm(this, dateString.trim(), timeString,noteTitle,noteDescription)
+            reminderHelper.setAlarm(this, dateString.trim(), timeString, noteTitle, noteDescription)
             reminderDialogue.dismiss()
         }
 
@@ -403,8 +390,7 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         }
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean
-    {
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_logout -> {
                 auth.signOut()
@@ -444,7 +430,6 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         }
         return true
     }
-
 }
 
 
