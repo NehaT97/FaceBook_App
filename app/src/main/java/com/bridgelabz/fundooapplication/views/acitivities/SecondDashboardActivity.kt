@@ -48,13 +48,9 @@ class SecondDashboardActivity : AppCompatActivity() {
         if (isUpdateOperation) {
             val noteId = intent.getStringExtra("noteId")
             val userId = intent.getStringExtra("userId")
-            val createdAt = intent.getLongExtra("createdAt",0)
             val title = findViewById<EditText>(R.id.NoteTitle).text.toString()
             val description = findViewById<EditText>(R.id.NoteDescription).text.toString()
-<<<<<<< HEAD
-=======
             val createdAt = intent.getLongExtra("createdAt",0)
->>>>>>> Development
             val note= Note(noteId, userId, title, description,createdAt)
             val id = noteService.findNoteByNoteId(noteId).addOnCompleteListener {
                 if (it.isComplete) {
@@ -67,10 +63,6 @@ class SecondDashboardActivity : AppCompatActivity() {
             }
             Log.i("Update note operation", "$note")
             Log.i("Updated Date Check","$createdAt")
-<<<<<<< HEAD
-
-=======
->>>>>>> Development
         } else {
             val title = findViewById<EditText>(R.id.NoteTitle).text.toString()
             val description = findViewById<EditText>(R.id.NoteDescription).text.toString()
@@ -81,6 +73,4 @@ class SecondDashboardActivity : AppCompatActivity() {
             }
         }
     }
-
-
 }

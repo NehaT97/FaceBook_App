@@ -41,12 +41,9 @@ import com.google.firebase.firestore.DocumentSnapshot
 import java.io.InputStream
 import java.util.*
 import java.util.stream.Collectors
-<<<<<<< HEAD
-=======
 import kotlin.collections.ArrayList
 import kotlin.concurrent.schedule
 import kotlin.properties.Delegates
->>>>>>> Development
 
 
 class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListener,
@@ -93,14 +90,11 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         navigateToSecondDashboard()
         recyclerViewToDisplayNotesInList()
         auth = FirebaseAuth.getInstance()
-<<<<<<< HEAD
         notificationHelper = NotificationHelper(this)
-=======
         notificationHelper =
             NotificationHelper(
                 this
             )
->>>>>>> Development
     }
 
     private fun configurePage(navigationView: NavigationView) {
@@ -188,13 +182,11 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
                     Log.i("PAGE Details", "$pageNo $pageSize")
                     Log.i("Notes", "${ArrayList(it.result!!.toObjects(Note::class.java)).stream().map(Note::createdAt).collect(Collectors.toList())}")
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-<<<<<<< HEAD
                         notesList = ArrayList(it.result!!.toObjects(Note::class.java))
                             .stream()
                             .filter { note: Note -> showDeletedNotes.equals(note.isDeleted) }
                             .filter { note: Note -> showArchivedNotes.equals(note.isArchived) }
                             .collect(Collectors.toList()) as ArrayList<Note>
-=======
                         notesDocumentSnapshots = it.result!!.documents
                         Log.i("Documents Snapshot","$notesDocumentSnapshots")
                         if (isInitLoad) {
@@ -202,16 +194,14 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
                         } else {
                             notesList.addAll(ArrayList(it.result!!.toObjects(Note::class.java)))
                         }
->>>>>>> Development
+
                     }
                     noteAdapter.updateList(notesList)
                     noteAdapter.notifyDataSetChanged()
                 }
             }
-<<<<<<< HEAD
             //  Log.i("Notes", noteService.getNoteList2(userEmail).toString())
-=======
->>>>>>> Development
+
         }
     }
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
