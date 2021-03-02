@@ -284,7 +284,6 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         intent.putExtra("title", note.title)
         intent.putExtra("userId", note.userId)
         intent.putExtra("noteId", note.noteId)
-       // intent.putExtra("createdAt",note.createdAt)
         intent.putExtra("createdAt",note.createdAt)
         startActivity(intent)
     }
