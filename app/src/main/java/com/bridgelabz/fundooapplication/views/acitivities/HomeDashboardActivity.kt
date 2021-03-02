@@ -39,10 +39,6 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import java.io.InputStream
-import java.util.*
-import java.util.stream.Collectors
-import kotlin.collections.ArrayList
-import kotlin.concurrent.schedule
 import kotlin.properties.Delegates
 
 
@@ -127,8 +123,8 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener(){
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                Log.i("Scroll","onScrollStateChanged: Called")
-                if (!recyclerView.canScrollVertically(1)){
+                if (RecyclerView.SCROLL_STATE_IDLE == newState && !recyclerView.canScrollVertically(1)){
+                    Log.i("Scroll","Fetching Data")
                     fetchData()
                 }
             }
@@ -150,7 +146,7 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
 
     private fun fetchData() {
         val handler:Handler = Handler()
-         progressBar = findViewById<ProgressBar>(R.id.progressBar1)
+         progressBar = findViewById(R.id.progressBar1)
         progressBar.visibility = View.VISIBLE
         handler.postDelayed({
             loadNotesData(false, 2, 9)
@@ -171,21 +167,11 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         val showDeletedNotes = intent.getBooleanExtra("isTrashPage", false)
         val showArchivedNotes = intent.getBooleanExtra("isArchivedPage", false)
         val lastCreationTimeStamp:Long = if(notesList.isEmpty()) 0
-                                         else notesList.get(notesList.size -1).createdAt
-        var lastVisibleSnapshot : DocumentSnapshot? = null
-        if (!isInitLoad && notesDocumentSnapshots.isNullOrEmpty()) {
-            lastVisibleSnapshot = notesDocumentSnapshots[notesDocumentSnapshots.size - 1]
-            Log.i("lastVisibleSnapshot1","$lastVisibleSnapshot")
-        }
+                                         else notesList.last().createdAt
         if (userEmail != null) {
-            noteService.getLimitedNoteList1(userEmail, showDeletedNotes, showArchivedNotes, pageSize,lastCreationTimeStamp).addOnCompleteListener {
-                Log.i("lastVisibleSnapshot2","$lastVisibleSnapshot")
+            noteService.getLimitedNoteList(userEmail, showDeletedNotes, showArchivedNotes, pageSize,lastCreationTimeStamp).addOnCompleteListener {
                 if (it.isSuccessful) {
-                    Log.i("PAGE Details", "$pageNo $pageSize")
-                    Log.i("Notes", "${ArrayList(it.result!!.toObjects(Note::class.java)).stream().map(Note::createdAt).collect(Collectors.toList())}")
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        notesDocumentSnapshots = it.result!!.documents
-                        Log.i("Documents Snapshot","$notesDocumentSnapshots")
                         if (isInitLoad) {
                             notesList = ArrayList(it.result!!.toObjects(Note::class.java))
                         } else {
@@ -209,9 +195,7 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText.isNullOrBlank()) {
-                    //noteAdapter.notes = notesList
                     noteAdapter.updateList(notesList)
-
                 }
                 noteAdapter.filter.filter(newText)
                 return true
@@ -360,7 +344,6 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         val ref = noteService.findNoteByNoteId(note.noteId).addOnCompleteListener {
             if (it.isComplete) {
                 if (it.result!!.any()) {
-                    //  noteAdapter.note = notesList
                     val docId = it.result!!.documents[0].id
                     noteService.update(docId, note)
                     noteAdapter.updateList(notesList)
@@ -430,7 +413,6 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
             Toast.makeText(this, "Reminder Not Saved", Toast.LENGTH_SHORT).show()
             reminderDialogue.dismiss()
         }
-
     }
 
     override fun onArchivedButtonClicked(view: View?, pos: Int) {
@@ -495,7 +477,6 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         }
         return true
     }
-
 }
 
 

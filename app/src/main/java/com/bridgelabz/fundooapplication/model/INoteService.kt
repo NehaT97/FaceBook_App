@@ -16,15 +16,6 @@ interface INoteService {
         userId: String,
         isDeleted: Boolean,
         isArchived: Boolean,
-        startIndex: DocumentSnapshot?,
-        pageSize: Long,
-        lastCreationTimeStamp:Long
-    ): Task<QuerySnapshot>
-
-    fun getLimitedNoteList1(
-        userId: String,
-        isDeleted: Boolean,
-        isArchived: Boolean,
         limit: Long,
         lastCreationTimestamp: Long
     ): Task<QuerySnapshot>

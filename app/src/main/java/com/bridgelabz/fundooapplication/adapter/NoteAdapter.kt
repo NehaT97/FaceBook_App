@@ -27,7 +27,6 @@ class NoteAdapter(private var notes: ArrayList<Note>, val isTrashPage: Boolean, 
             noteTitle: String,
             noteDescription: String
         )
-
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {

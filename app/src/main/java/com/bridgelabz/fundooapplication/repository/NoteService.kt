@@ -30,24 +30,7 @@ class NoteService : INoteService {
         return firebaseStore.collection("Notes").whereEqualTo("userId", userId).get()
     }
 
-    override fun getLimitedNoteList(userId: String, isDeleted: Boolean, isArchived: Boolean, lastVisibleSnapshot: DocumentSnapshot?, pageSize: Long,lastCreationTimeStamp:Long): Task<QuerySnapshot> {
-        Log.i("lastSnapshot","$lastVisibleSnapshot")
-        if (lastVisibleSnapshot == null) {
-            return firebaseStore.collection("Notes").whereEqualTo("userId",userId)
-                .whereEqualTo("deleted", isDeleted)
-                .whereEqualTo("archived", isArchived)
-                .orderBy("createdAt")
-                .limit(pageSize).get()
-        }
-        return firebaseStore.collection("Notes").whereEqualTo("userId",userId)
-            .whereEqualTo("deleted", isDeleted)
-            .whereEqualTo("archived", isArchived)
-            .orderBy("createdAt")
-            .startAfter(lastCreationTimeStamp)
-            .limit(pageSize).get()
-    }
-
-    override fun getLimitedNoteList1(userId: String, isDeleted: Boolean, isArchived: Boolean, limit: Long, lastCreationTimestamp : Long): Task<QuerySnapshot> {
+    override fun getLimitedNoteList(userId: String, isDeleted: Boolean, isArchived: Boolean, limit: Long, lastCreationTimestamp : Long): Task<QuerySnapshot> {
         return firebaseStore.collection("Notes").whereEqualTo("userId",userId)
             .whereEqualTo("deleted", isDeleted)
             .whereEqualTo("archived", isArchived)
