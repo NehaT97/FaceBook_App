@@ -118,7 +118,7 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         val recyclerView = findViewById<RecyclerView>(id.fragmentRecycle)
         recyclerView.layoutManager = LinearLayoutManager(this)
         noteAdapter.setOnItemClickListener(this)
-        loadNotesData(true, 1, 5)
+        loadNotesData(true, 1, 9)
         noteAdapter.updateList(notesList)
         recyclerView.adapter = noteAdapter
 
@@ -128,8 +128,8 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
                 Log.i("Scroll","onScrollStateChanged: Called")
                 if (!recyclerView.canScrollVertically(1)){
                     isScrolling = true
-                    Timer("Fetch Notes", false).schedule(3000) {
-                        loadNotesData(false, 2, 5)
+                    Timer("Fetch Notes", false).schedule(1000) {
+                        loadNotesData(false, 2, 9)
                     }
                 }
             }
@@ -147,8 +147,8 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
 
                 if (isScrolling && (visibleItems + scrollOutItems == totalItems)){
                     isScrolling = false
-                    Timer("Fetch Notes", false).schedule(10000) {
-                        loadNotesData(false, 3, 5)
+                    Timer("Fetch Notes", false).schedule(1000) {
+                        loadNotesData(false, 3, 9)
                     }
                 }
             }
@@ -163,8 +163,8 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
     }
 
     private fun loadNotesData(isInitLoad:Boolean, pageNo:Long, pageSize: Long) {
-        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
-        //progressBar.visibility = View.VISIBLE
+        val progressBar = findViewById<ProgressBar>(R.id.progressBar1)
+//        progressBar.visibility = View.VISIBLE
         val user = noteService.getUser()
         val userEmail = user?.email
         val showDeletedNotes = intent.getBooleanExtra("isTrashPage", false)
@@ -192,49 +192,9 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
                 }
             }
         }
-        progressBar.visibility = View.GONE
+        //progressBar.visibility = View.GONE
     }
 
-   /* private fun loadNotesData( ){
-        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
-       progressBar.visibility = View.VISIBLE
-        val user = noteService.getUser()
-        val userEmail = user?.email
-        val showDeletedNotes = intent.getBooleanExtra("isTrashPage", false)
-        val showArchivedNotes = intent.getBooleanExtra("isArchivedPage", false)
-        var tempList = ArrayList<Note>()
-        if (userEmail != null) {
-            noteService.getNoteList(userEmail).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        tempList = ArrayList(it.result!!.toObjects(Note::class.java))
-                            .stream()
-                            .filter { note: Note -> showDeletedNotes == note.isDeleted }
-                            .filter { note: Note -> showArchivedNotes == note.isArchived }
-                            .collect(Collectors.toList()) as ArrayList<Note>
-                        totaNotesCount = tempList.size
-                    }
-                  *//*  if (isInitLoad) {
-                        notesList = tempList.subList(pageNo, pageSize).toList() as ArrayList<Note>
-                    } else {
-                        val startIndex = (pageNo - 1) * pageSize
-                        var endIndex = (pageNo) * pageSize
-                        if (endIndex > tempList.size) {
-                            endIndex = tempList.size
-                        }
-                        notesList.addAll(tempList.subList(startIndex, endIndex).toList() as ArrayList<Note>)
-                    }*//*
-                    noteAdapter.updateList(notesList)
-                    noteAdapter.notifyDataSetChanged()
-                    progressBar.visibility = View.GONE
-
-                }
-            }
-          //  Log.i("Notes", noteService.getNoteList2(userEmail).toString())
-          //  findViewById<ProgressBar>(R.id.progressBar).visibility = View.GONE
-        }
-    }
-*/
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         val searchItem = menu?.findItem(R.id.search)
         val searchView = searchItem?.actionView as SearchView
@@ -385,6 +345,7 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
         intent.putExtra("title", note.title)
         intent.putExtra("userId", note.userId)
         intent.putExtra("noteId", note.noteId)
+        intent.putExtra("createdAt",note.createdAt)
         startActivity(intent)
     }
 

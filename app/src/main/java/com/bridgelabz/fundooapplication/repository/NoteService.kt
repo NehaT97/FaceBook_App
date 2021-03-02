@@ -1,7 +1,6 @@
 package com.bridgelabz.fundooapplication.repository
 
 import android.util.Log
-import android.widget.Toast
 import com.bridgelabz.fundooapplication.model.INoteService
 import com.bridgelabz.fundooapplication.model.Note
 import com.google.android.gms.tasks.Task
@@ -11,8 +10,6 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.messaging.FirebaseMessaging
-import java.util.stream.Collectors
 
 class NoteService : INoteService {
 
@@ -43,14 +40,13 @@ class NoteService : INoteService {
             return firebaseStore.collection("Notes").whereEqualTo("userId",userId)
                 .whereEqualTo("deleted", isDeleted)
                 .whereEqualTo("archived", isArchived)
-                .startAt()
-                .orderBy("title")
+                .orderBy("createdAt")
                 .limit(pageSize).get()
         }
         return firebaseStore.collection("Notes").whereEqualTo("userId",userId)
             .whereEqualTo("deleted", isDeleted)
             .whereEqualTo("archived", isArchived)
-            .orderBy("title")
+            .orderBy("createdAt")
             .startAfter(lastVisibleSnapshot)
             .limit(pageSize).get()
     }
