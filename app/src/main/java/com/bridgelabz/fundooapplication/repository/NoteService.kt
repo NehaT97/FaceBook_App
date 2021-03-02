@@ -6,17 +6,12 @@ import com.bridgelabz.fundooapplication.model.Note
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 
 class NoteService : INoteService {
 
     private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firebaseStore: FirebaseFirestore = FirebaseFirestore.getInstance()
-
-
 
     override fun getUser(): FirebaseUser? {
         return firebaseAuth.currentUser
@@ -35,7 +30,8 @@ class NoteService : INoteService {
         return firebaseStore.collection("Notes").whereEqualTo("userId", userId).get()
     }
 
-    override fun getLimitedNoteList(userId: String, isDeleted: Boolean, isArchived: Boolean, lastVisibleSnapshot: DocumentSnapshot?, pageSize: Long): Task<QuerySnapshot> {
+    override fun getLimitedNoteList(userId: String, isDeleted: Boolean, isArchived: Boolean, lastVisibleSnapshot: DocumentSnapshot?, pageSize: Long,lastCreationTimeStamp:Long): Task<QuerySnapshot> {
+        Log.i("lastSnapshot","$lastVisibleSnapshot")
         if (lastVisibleSnapshot == null) {
             return firebaseStore.collection("Notes").whereEqualTo("userId",userId)
                 .whereEqualTo("deleted", isDeleted)
@@ -47,14 +43,21 @@ class NoteService : INoteService {
             .whereEqualTo("deleted", isDeleted)
             .whereEqualTo("archived", isArchived)
             .orderBy("createdAt")
-            .startAfter(lastVisibleSnapshot)
+            .startAfter(lastCreationTimeStamp)
             .limit(pageSize).get()
     }
 
+    override fun getLimitedNoteList1(userId: String, isDeleted: Boolean, isArchived: Boolean, limit: Long, lastCreationTimestamp : Long): Task<QuerySnapshot> {
+        return firebaseStore.collection("Notes").whereEqualTo("userId",userId)
+            .whereEqualTo("deleted", isDeleted)
+            .whereEqualTo("archived", isArchived)
+            .orderBy("createdAt")
+            .startAfter(lastCreationTimestamp)
+            .limit(limit).get()
+    }
     override fun findNoteByNoteId(noteId: String): Task<QuerySnapshot> {
         return firebaseStore.collection("Notes").whereEqualTo("noteId", noteId).get()
     }
-
 
     override fun update(documentId:String, notes: Note) {
         firebaseStore.collection("Notes").document(documentId).set(notes)

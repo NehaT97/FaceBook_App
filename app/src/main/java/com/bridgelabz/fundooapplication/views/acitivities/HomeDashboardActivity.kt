@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
@@ -48,6 +49,7 @@ import kotlin.properties.Delegates
 class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListener,
     NavigationView.OnNavigationItemSelectedListener {
 
+    private lateinit var progressBar: ProgressBar
     lateinit var mDrawerLayout: DrawerLayout
     lateinit var mDrawerToggle: ActionBarDrawerToggle
     lateinit var notificationHelper: NotificationHelper
@@ -127,10 +129,7 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
                 super.onScrollStateChanged(recyclerView, newState)
                 Log.i("Scroll","onScrollStateChanged: Called")
                 if (!recyclerView.canScrollVertically(1)){
-                    isScrolling = true
-                    Timer("Fetch Notes", false).schedule(1000) {
-                        loadNotesData(false, 2, 9)
-                    }
+                    fetchData()
                 }
             }
 
@@ -145,14 +144,18 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
                 scrollOutItems = layoutManager.findFirstVisibleItemPosition()
                 Log.i("Scroll","scrollOutItems: $scrollOutItems")
 
-                if (isScrolling && (visibleItems + scrollOutItems == totalItems)){
-                    isScrolling = false
-                    Timer("Fetch Notes", false).schedule(1000) {
-                        loadNotesData(false, 3, 9)
-                    }
-                }
             }
         })
+    }
+
+    private fun fetchData() {
+        val handler:Handler = Handler()
+         progressBar = findViewById<ProgressBar>(R.id.progressBar1)
+        progressBar.visibility = View.VISIBLE
+        handler.postDelayed({
+            loadNotesData(false, 2, 9)
+            progressBar.visibility = View.GONE
+        },3000)
     }
 
     private fun recyclerViewToDisplayNotesInGrid() {
@@ -163,24 +166,26 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
     }
 
     private fun loadNotesData(isInitLoad:Boolean, pageNo:Long, pageSize: Long) {
-        val progressBar = findViewById<ProgressBar>(R.id.progressBar1)
-//        progressBar.visibility = View.VISIBLE
         val user = noteService.getUser()
         val userEmail = user?.email
         val showDeletedNotes = intent.getBooleanExtra("isTrashPage", false)
         val showArchivedNotes = intent.getBooleanExtra("isArchivedPage", false)
+        val lastCreationTimeStamp:Long = if(notesList.isEmpty()) 0
+                                         else notesList.get(notesList.size -1).createdAt
         var lastVisibleSnapshot : DocumentSnapshot? = null
         if (!isInitLoad && notesDocumentSnapshots.isNullOrEmpty()) {
             lastVisibleSnapshot = notesDocumentSnapshots[notesDocumentSnapshots.size - 1]
+            Log.i("lastVisibleSnapshot1","$lastVisibleSnapshot")
         }
         if (userEmail != null) {
-            val startIndex = (pageNo - 1) * pageSize
-            noteService.getLimitedNoteList(userEmail, showDeletedNotes, showArchivedNotes, lastVisibleSnapshot, pageSize).addOnCompleteListener {
+            noteService.getLimitedNoteList1(userEmail, showDeletedNotes, showArchivedNotes, pageSize,lastCreationTimeStamp).addOnCompleteListener {
+                Log.i("lastVisibleSnapshot2","$lastVisibleSnapshot")
                 if (it.isSuccessful) {
                     Log.i("PAGE Details", "$pageNo $pageSize")
-                    Log.i("Notes", "${ArrayList(it.result!!.toObjects(Note::class.java)).stream().map(Note::title).collect(Collectors.toList())}")
+                    Log.i("Notes", "${ArrayList(it.result!!.toObjects(Note::class.java)).stream().map(Note::createdAt).collect(Collectors.toList())}")
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         notesDocumentSnapshots = it.result!!.documents
+                        Log.i("Documents Snapshot","$notesDocumentSnapshots")
                         if (isInitLoad) {
                             notesList = ArrayList(it.result!!.toObjects(Note::class.java))
                         } else {
@@ -192,7 +197,6 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
                 }
             }
         }
-        //progressBar.visibility = View.GONE
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
