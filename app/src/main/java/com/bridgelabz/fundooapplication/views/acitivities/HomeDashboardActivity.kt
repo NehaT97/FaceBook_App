@@ -12,10 +12,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -370,7 +367,10 @@ class HomeDashboardActivity : AppCompatActivity(), NoteAdapter.OnItemClickListen
     private fun selectReminderDateAndTimeDialog(noteTitle: String, noteDescription: String) {
         val reminderDialogue = Dialog(this)
         reminderDialogue.setContentView(layout.reminder_dialogue1)
+        reminderDialogue.setTitle("Add Reminder")
         reminderDialogue.show()
+        reminderDialogue.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE)
+
         val btnDate = reminderDialogue.findViewById<Button>(R.id.btn_date)
         val btnTime = reminderDialogue.findViewById<Button>(R.id.btn_time)
         val inDate = reminderDialogue.findViewById<EditText>(R.id.in_date)

@@ -1,14 +1,29 @@
 package com.bridgelabz.fundooapplication.views.acitivities
 
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.widget.doOnTextChanged
 import com.bridgelabz.fundooapplication.R
 import com.bridgelabz.fundooapplication.model.Note
 import com.bridgelabz.fundooapplication.repository.NoteService
+import com.bridgelabz.fundooapplication.service.GoogleMapService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.*
 
 class SecondDashboardActivity : AppCompatActivity() {
@@ -73,4 +88,67 @@ class SecondDashboardActivity : AppCompatActivity() {
             }
         }
     }
+
+    @Override
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val menuInflater: MenuInflater = menuInflater
+        menuInflater.inflate(R.menu.second_toolbar_menu, menu)
+        return true
+    }
+
+    @Override
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        //return super.onOptionsItemSelected(item)
+        when (item.itemId) {
+            R.id.setLocation -> {
+                setLocationDialogue()
+                return true
+            }
+
+            R.id.setReminder -> {
+                Toast.makeText(this, "Set Reminder", Toast.LENGTH_LONG).show()
+                return true
+            }
+        }
+        return true
+    }
+
+    private fun setLocationDialogue() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Add Reminder")
+        val view = layoutInflater.inflate(R.layout.location_dialogue, null)
+        builder.setView(view)
+        builder.show()
+        val selectLocationValue = view.findViewById<EditText>(R.id.editLocation)
+        selectLocationValue.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                Log.i("Search OnTextChanged", "$s, $start, $before, $count")
+                val call = GoogleMapService.getInstance()
+                    .getSearchLocationsByName(
+                        "AIzaSyDEXFnmPN3K-vSfF5HGGASkF0TUvFGQsxg",
+                        s.toString(),
+                        "textquery"
+                    )
+                call.enqueue(object : Callback<Any> {
+                    override fun onFailure(call: Call<Any>, t: Throwable) {
+                        Log.e("Request Failed", "${t.message}", t)
+                    }
+
+                    override fun onResponse(call: Call<Any>, response: Response<Any>) {
+                        Log.i("Response", "${response.body()}")
+                    }
+                })
+            }
+
+        })
+    }
+
 }

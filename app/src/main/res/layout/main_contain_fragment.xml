@@ -39,8 +39,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-
-
     <fragment
         android:id="@+id/fragmentRecycleView"
         android:name="com.bridgelabz.fundooapplication.views.fragments.RecyclerViewFragment"
@@ -49,8 +47,6 @@
         android:layout_marginTop="65dp"
 
         />
-
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addNotesFab"
         android:layout_width="wrap_content"

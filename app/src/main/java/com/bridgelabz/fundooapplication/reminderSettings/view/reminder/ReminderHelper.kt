@@ -24,9 +24,6 @@ class ReminderHelper : IReminderHelper {
         val mMonth = calender.get(Calendar.MONTH)
         val mDay = calender.get(Calendar.DAY_OF_MONTH)
 
-        val reminderDialogue = Dialog(context)
-        reminderDialogue.setContentView(R.layout.reminder_dialogue)
-
         val datePickerDialog = DatePickerDialog(
             context,
             DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->

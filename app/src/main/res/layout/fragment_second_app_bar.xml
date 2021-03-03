@@ -15,7 +15,7 @@
             android:minHeight="?attr/actionBarSize"
             app:navigationIcon="?attr/homeAsUpIndicator"
             app:titleTextColor="@color/white"
-
+            app:menu="@menu/second_toolbar_menu"
             />
 
 

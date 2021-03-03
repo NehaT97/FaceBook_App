@@ -3,4 +3,6 @@
     <item name="menuButton" type="id"></item>
     <item name="nav_view" type="id"></item>
     <item name="description" type="id"></item>
+    <item name="savelocation" type="id"></item>
+    <item name="closelocation" type="id"></item>
 </resources>

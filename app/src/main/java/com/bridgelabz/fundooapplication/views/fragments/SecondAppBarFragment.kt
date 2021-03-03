@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.bridgelabz.fundooapplication.R
@@ -19,6 +20,9 @@ class SecondAppBarFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_second_app_bar, container, false)
         val toolbarSecond = view.findViewById<Toolbar>(R.id.toolbarSecond)
+
+        (activity as AppCompatActivity?)!!.setSupportActionBar(toolbarSecond)
+        setHasOptionsMenu(true)
 
         setBackNavigationIconColor(toolbarSecond)
         navigateToHomeDashboard(toolbarSecond)

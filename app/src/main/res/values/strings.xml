@@ -45,4 +45,6 @@
     <string name="timeFormat">H:MM</string>
     <string name="cancelReminder">Cancel</string>
     <string name="AddReminder">Add</string>
+    <string name="save">Save</string>
+    <string name="close">Close</string>
 </resources>
